@@ -141,11 +141,11 @@ canvec.shapefiles <- function(ntsid, ..., cachedir=NULL) {
       singleid <- ntsid[[i]]
       startindex <- (i-1)*nlayers+1
       endindex <- i*nlayers
-      out[startindex:endindex] <- canvec_cached(singleid, ..., cachedir=cachedir)
+      out[startindex:endindex] <- canvec.shapefiles(singleid, ..., cachedir=cachedir)
     }
     out
   } else {
-    paste(cachedir, canvec_filename(ntsid), canvec_shapefilename(...), sep="/")
+    paste(cachedir, canvec_filename(ntsid), paste0(canvec.layers(...), ".shp"), sep="/")
   }
 }
 
@@ -194,4 +194,43 @@ canvec.load <- function(ntsid, layerid, cachedir=NULL) {
   } else {
     NULL
   }
+}
+
+canvec.qplot <- function(ntsid, river=TRUE, contour=TRUE, building=TRUE, road=TRUE,
+                         waterbody.col="lightblue", waterbody.border="lightblue", contour.col="brown",
+                         contour.lwd=0.2, river.col="lightblue", river.lwd=1, road.col="black", road.lwd=0.5,
+                         building.pch=".", building.col="black", plotdata=TRUE, data=NULL, ...) {
+  supress_return = !is.null(data)
+  if(is.null(data)) {
+    #download
+    canvec.download(ntsid)
+    #load data
+    data <- list()
+    data$waterbody <- canvec.load(ntsid, "waterbody") #use as base layer, may change
+  }
+  
+  if(building && is.null(data$building))
+    data$building <- canvec.load(ntsid, "building")
+  if(river && is.null(data$river))
+    data$river <- canvec.load(ntsid, "river")
+  if(road && is.null(data$road))
+    data$road <- canvec.load(ntsid, "road")
+  if(contour && is.null(data$contour))
+    data$contour <- canvec.load(ntsid, "contour")
+  
+  if(plotdata) {
+    #waterbody must be true, need some base layer to plot. use mapsheet bg in the future?
+    plot(data$waterbody, col=waterbody.col, border=waterbody.border, ...)
+    if(contour)
+      plot(data$contour, add=T, col=contour.col, lwd=contour.lwd)
+    if(river)
+      plot(data$river, add=T, col=river.col, lwd=river.lwd)
+    if(building)
+      plot(data$building, add=T, pch=building.pch, col=building.col)
+    if(road)
+      plot(data$road, add=T, lwd=road.lwd, col=road.col)
+  }
+  
+  if(!supress_return)
+    data
 }
