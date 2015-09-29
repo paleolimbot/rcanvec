@@ -128,15 +128,23 @@ nts <- function(..., lat=NULL, lon=NULL, bbox=NULL, atscale=nts.SCALE50K) {
   }
 }
 
-ntsstring <- function(ntsid) {
-  if(class(ntsid)=="list") {
-    out <- rep("", length(ntsid))
-    for(i in 1:length(ntsid)) {
-      out[i] <- paste0(ntsid[[i]], collapse="")
+ntsstring <- function(ntsid=NULL, lat=NULL, lon=NULL, bbox=NULL, atscale=nts.SCALE50K) {
+  if(!is.null(lat) || !is.null(lon) || !is.null(bbox)) {
+    if(!is.null(ntsid)) stop("NTS ids specified alongside arguments to be passed to nts()")
+    return(ntsstring(nts(lat=lat, lon=lon, bbox=bbox, atscale=atscale)))
+  } else if(!is.null(ntsid)) {
+    if(class(ntsid)=="list") {
+      out <- rep("", length(ntsid))
+      for(i in 1:length(ntsid)) {
+        out[i] <- paste0(ntsid[[i]], collapse="")
+      }
+      out
+    } else {
+      paste0(ntsid, collapse="")
     }
-    out
   } else {
-    paste0(ntsid, collapse="")
+    stop("No arguments passed to ntsstring()")
   }
+
 }
 
