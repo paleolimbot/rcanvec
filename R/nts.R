@@ -98,6 +98,16 @@
   stop("Error in .ntsstring(), reached end of function by error")
 }
 
+#' Generate one or more NTS references based on arguments provided.
+#' 
+#' @param ... An arbitrary number of strings in the form 21h1 to be parsed
+#' @param lat A vector of latitude values
+#' @param lon A vector of longitude values
+#' @param bbox A bounding box in the form returned by sp::bbox()
+#' @param atscale An integer value describing scale, either 1 (250k) or 2 (50k)
+#' @return one or more NTS references.
+#' @export
+#' 
 nts <- function(..., lat=NULL, lon=NULL, bbox=NULL, atscale=nts.SCALE50K) {
   ntsstring <- list(...)
   
@@ -128,6 +138,18 @@ nts <- function(..., lat=NULL, lon=NULL, bbox=NULL, atscale=nts.SCALE50K) {
   }
 }
 
+#' Generate NTS strings from NTS references or other arguments to generate
+#' such a list from nts() based on arguments provided.
+#' 
+#' @param ... An arbitrary number of NTS references in the form c("021", "H", "01") 
+#' to be converted
+#' @param lat A vector of latitude values
+#' @param lon A vector of longitude values
+#' @param bbox A bounding box in the form returned by sp::bbox()
+#' @param atscale An integer value describing scale, either 1 (250k) or 2 (50k)
+#' @return one or more NTS references.
+#' @export
+#' 
 ntsstring <- function(ntsid=NULL, lat=NULL, lon=NULL, bbox=NULL, atscale=nts.SCALE50K) {
   if(!is.null(lat) || !is.null(lon) || !is.null(bbox)) {
     if(!is.null(ntsid)) stop("NTS ids specified alongside arguments to be passed to nts()")
