@@ -1,33 +1,61 @@
 #demo of rcanvec package
 
-source("R/rcanvec.R")
-source("R/nts.R")
-source("R/canvec.R")
+#nts() function generates nts references based on lat, lon, or
+#bounding coordinates
+nts('21h')
+nts('21h1')
+nts('21h1', '21a16', '21A15')
+nts(lat=45.2, lon=-64.32)
+nts(lat=c(45.2, 46.2), lon=c(-64.32, -64.81))
+nts(bbox=makebbox(45.125, -64.25, 44.875, -64.75))
 
-#download data
-canvec.download(nts('21h'))
+#variant ntsstring() converts nts to string formats or takes the same
+#arguments as nts() and returns a string vector instead.
+ntsstring(c("021", "H", "01"))
+ntsstring(bbox=makebbox(45.125, -64.25, 44.875, -64.75))
+
+
+#download canvec or canvec+ data. 250k references use canvec+ (large amounts of data)
+#and 50k references use canvec data (older but distributed in smaller chunks).
+canvec.download(nts('21h1'))
 
 #load data
-buildings <- canvec.load(nts("21h"), "building")
-lakes <- canvec.load(nts("21h"), "waterbody")
-rivers <- canvec.load(nts('21h'), "river")
-roads <- canvec.load(nts('21h'), "road")
-contours <- canvec.load(nts('21h'), "contour")
+buildings <- canvec.load(nts("21h1"), "building")
+lakes <- canvec.load(nts("21h1"), "waterbody")
+rivers <- canvec.load(nts('21h1'), "river")
+roads <- canvec.load(nts('21h1'), "road")
+contours <- canvec.load(nts('21h1'), "contour")
 
 #plot data
 plot(lakes, col="lightblue", border="lightblue")
-plot(rivers, add=T, col="lightblue")
-plot(buildings, add=T, pch=".")
+plot(rivers, add=TRUE, col="lightblue")
+plot(buildings, add=TRUE, pch=".")
 
 #zoomed in
-plot(NULL, xlim=c(-64.4,-64.35), ylim=c(45.05,45.1))
-plot(lakes, add=T, col="lightblue", border="lightblue")
-plot(contours, add=T, col="brown", lwd=0.2)
-plot(rivers, add=T, col="lightblue")
-plot(buildings, add=T, pch=".")
-plot(roads, add=T, lwd=0.5)
+plot(lakes, col="lightblue", border="lightblue", 
+     xlim=c(-64.4,-64.35), ylim=c(45.05,45.1))
+plot(contours, add=TRUE, col="brown", lwd=0.2)
+plot(rivers, add=TRUE, col="lightblue")
+plot(buildings, add=TRUE, pch=".")
+plot(roads, add=TRUE, lwd=0.5)
 
 #equivalent syntax in canvec.qplot()
-plotdata <- canvec.qplot(nts("21h"))
-canvec.qplot(nts("21h"), data=plotdata, xlim=c(-64.4,-64.35), ylim=c(45.05,45.1))
+canvec.qplot(nts("21h1"), contour=TRUE, building=TRUE, road=TRUE)
+canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), contour=TRUE, building=TRUE, road=TRUE)
 
+#method returns plot data argument so data does not need to be loaded each time. this will not work
+#when changing nts sheets.
+plotdata <- canvec.qplot(nts("21h1"), contour=TRUE, building=TRUE, road=TRUE)
+plotdata <- canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), contour=TRUE, building=TRUE, road=TRUE,
+                         data=plotdata)
+
+#easy exporting with human readable names
+canvec.export(nts("21h01"), "~/canvecdata", layerids=c("road", "river"))
+# ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.dbf to ~/canvecdata/021H01_road.dbf 
+# ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.prj to ~/canvecdata/021H01_road.prj 
+# ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.shp to ~/canvecdata/021H01_road.shp 
+# ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.shx to ~/canvecdata/021H01_road.shx 
+# ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.dbf to ~/canvecdata/021H01_river.dbf 
+# ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.prj to ~/canvecdata/021H01_river.prj 
+# ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.shp to ~/canvecdata/021H01_river.shp 
+# ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.shx to ~/canvecdata/021H01_river.shx

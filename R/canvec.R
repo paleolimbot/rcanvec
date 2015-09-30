@@ -13,10 +13,17 @@ canvec.cachedir <- function() {
   dirname
 }
 
+#' Create a bounding box like that returned by sp::bbox()
+#' from a more preditable format
+#' @export
+makebbox <- function(n, e, s, w) {
+  matrix(c(w, s, e, n), byrow=FALSE, ncol=2, dimnames=list(c("x", "y"), c("min", "max")))
+}
 
 # Functions to get file names --------
 
 canvec.layers <- function(...) {
+  data(canvec_layers, envir=environment())
   layerids <- list(...)
   filt <- match(layerids, canvec_layers$id)
   if(any(is.na(filt))) {
@@ -152,7 +159,7 @@ canvec.load <- function(ntsid, layerid, cachedir=NULL) {
 #' 
 #' @export
 canvec.export <- function(ntsid, tofolder, layerids=NULL, cachedir=NULL, overwrite=TRUE) {
-
+  
   dir.create(tofolder)
   
   if(class(ntsid) != "list") {
@@ -162,6 +169,7 @@ canvec.export <- function(ntsid, tofolder, layerids=NULL, cachedir=NULL, overwri
     cachedir <- canvec.cachedir()
   }
   if(is.null(layerids)) {
+    data(canvec_layers, envir=environment())
     layerids <- canvec_layers$id
   }
   
@@ -257,6 +265,7 @@ canvec.qplot <- function(ntsid=NULL, bbox=NULL, waterbody=TRUE, river=TRUE, cont
     coords <- coordinates(t(bbox1))
     spoints = SpatialPoints(coords, proj4string = CRS("+proj=longlat +ellps=GRS80 +no_defs"))
     
+    #THIS DOES NOT WORK AS PREDICTED, if xlim or ylim are passed this generates an error
     if(!exists("xlim"))
       xlim <- bbox1[1,]
     if(!exists("ylim"))
@@ -264,15 +273,15 @@ canvec.qplot <- function(ntsid=NULL, bbox=NULL, waterbody=TRUE, river=TRUE, cont
     plot(spoints, pch=".", xlim=xlim, ylim=ylim, ...)
     
     if(waterbody)
-      for(layer in data$waterbody) plot(layer, add=T, col=waterbody.col, border=waterbody.border)
+      for(layer in data$waterbody) plot(layer, add=TRUE, col=waterbody.col, border=waterbody.border)
     if(contour)
-      for(layer in data$contour) plot(layer, add=T, col=contour.col, lwd=contour.lwd)
+      for(layer in data$contour) plot(layer, add=TRUE, col=contour.col, lwd=contour.lwd)
     if(river)
-      for(layer in data$river) plot(layer, add=T, col=river.col, lwd=river.lwd)
+      for(layer in data$river) plot(layer, add=TRUE, col=river.col, lwd=river.lwd)
     if(building)
-      for(layer in data$building) plot(layer, add=T, pch=building.pch, col=building.col)
+      for(layer in data$building) plot(layer, add=TRUE, pch=building.pch, col=building.col)
     if(road)
-      for(layer in data$road) plot(layer, add=T, lwd=road.lwd, col=road.col)
+      for(layer in data$road) plot(layer, add=TRUE, lwd=road.lwd, col=road.col)
   }
   
   invisible(data)

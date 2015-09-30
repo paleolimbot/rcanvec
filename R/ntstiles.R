@@ -321,10 +321,15 @@ nts.bybboxgeneric <-function(bbox, tilefuncx, tilefuncy, idfunc) {
 
 # User friendly functions ----
 
+
 nts.SCALE_SERIES <- 0
+#' @export
 nts.SCALE250K <- 1
+#' @export
 nts.SCALE50K <- 2
 
+#' Get NTS by bounding box
+#' @export
 nts.bybbox <- function(bbox, atscale) {
   if(atscale == nts.SCALE_SERIES) {
     tilexfunc <- nts.tileseriesx
@@ -344,6 +349,8 @@ nts.bybbox <- function(bbox, atscale) {
   nts.bybboxgeneric(bbox, tilexfunc, tileyfunc, idfunc)
 }
 
+#' Get NTS id at a given lat/lon and scale
+#' @export
 nts.idat <- function(lat, lon, atscale) {
   if(length(lat) != length(lon)) stop("Length of lat and lon arguments must be the same in nts.idat")
   if(atscale == nts.SCALE_SERIES) {
@@ -366,6 +373,8 @@ nts.idat <- function(lat, lon, atscale) {
   out
 }
 
+#' Get bounding box of a particular NTS Sheet.
+#' @export
 nts.bbox <- function(ntsid) {
   if(class(ntsid)=="list") {
     out <- list()
