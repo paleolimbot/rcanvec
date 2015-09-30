@@ -1,6 +1,11 @@
 #functions involving canvec
 
-
+# setup and create cache directory ----
+canvec.cachedir <- function() {
+  dirname <- file.path(getwd(), "rcanvec.cache")
+  created<-suppressWarnings(dir.create(dirname))
+  dirname
+}
 
 #Define canvec layers data frame ----
 
@@ -115,8 +120,17 @@ canvec.layers <- function(...) {
         canvec_layers$geometry_ext[filt])
 } 
 
-canvec_filename <- function(ntsid, ext=NULL) {
-  out <- paste("canvec", paste(toupper(ntsid[1:2]), collapse=""), "shp", sep="_")
+canvec.filename <- function(ntsid, ext=NULL) {
+  if(length(ntsid)>=3) {
+    #canvec
+    out <- paste("canvec", paste(tolower(ntsid), collapse=""), "shp", sep="_")
+  } else if(length(ntsid)==2) {
+    #canvec+
+    out <- paste("canvec", paste(toupper(ntsid), collapse=""), "shp", sep="_")
+  } else {
+    stop("Invalid nts passed to canvec.filename")
+  }
+  
   if(is.null(ext)) {
     out
   } else {
@@ -124,34 +138,21 @@ canvec_filename <- function(ntsid, ext=NULL) {
   }
 }
 
-canvec_url <- function(ntsid, server="http://ftp2.cits.rncan.gc.ca/pub/canvec+/shp") {
-  paste(server, ntsid[1], canvec_filename(ntsid, ext=".zip"), sep="/")
-}
-
-canvec.shapefiles <- function(ntsid, ..., cachedir=NULL) {
-  if(is.null(cachedir)) {
-    cachedir <- canvec_cachedir()
-  }
-  
-  if(class(ntsid)=="list") {
-    #return layers for all nts ids
-    nlayers <- length(list(...))
-    out <- rep("", length(ntsid)*nlayers)
-    for(i in 1:length(ntsid)) {
-      singleid <- ntsid[[i]]
-      startindex <- (i-1)*nlayers+1
-      endindex <- i*nlayers
-      out[startindex:endindex] <- canvec.shapefiles(singleid, ..., cachedir=cachedir)
-    }
-    out
+canvec.url <- function(ntsid, server="http://ftp2.cits.rncan.gc.ca/pub") {
+  if(length(ntsid)>=3) {
+    #assume canvec, available in 50k sheets
+    paste(server, "canvec/50k_shp", ntsid[1], tolower(ntsid[2]), canvec.filename(ntsid, ext=".zip"), sep="/")
+  } else if(length(ntsid)==2) {
+    #assume canvec+, only available in 250k sheets
+    paste(server, "canvec+/shp", ntsid[1], canvec.filename(ntsid, ext=".zip"), sep="/")
   } else {
-    paste(cachedir, canvec_filename(ntsid), paste0(canvec.layers(...), ".shp"), sep="/")
+    stop("Invalid nts id passed to canvec.url: ", ntsid)
   }
 }
 
 canvec.download <- function(..., forcedownload=FALSE, forceextract=FALSE, cachedir=NULL) {#list of ids
   if(is.null(cachedir)) {
-    cachedir <- canvec_cachedir()
+    cachedir <- canvec.cachedir()
   }
   
   ntsids <- list(...)
@@ -161,76 +162,200 @@ canvec.download <- function(..., forcedownload=FALSE, forceextract=FALSE, cached
   
   for(ntsid in ntsids) {
     #get folder path
-    folderpath <- paste(cachedir, canvec_filename(ntsid), sep="/")
-    zippath <- paste(cachedir, canvec_filename(ntsid, ext=".zip"), sep="/")
+    folderpath <- paste(cachedir, canvec.filename(ntsid), sep="/")
+    zippath <- paste(cachedir, canvec.filename(ntsid, ext=".zip"), sep="/")
+    skipextract <- FALSE
     if(!file.exists(zippath) || forcedownload) { #don't know how to test if it is a directory
       #download
-      uri <- canvec_url(ntsid)
-      cat("Downloading sheet", paste(ntsid,collapse="-"), "from", uri, "\n")
-      download.file(uri, zippath)
+      uri <- canvec.url(ntsid)
+      cat("Downloading sheet", paste(ntsid,collapse=""), "from", uri, "\n")
+      tryCatch(download.file(uri, zippath),
+               error=function(err) {
+                 skipextract<<-TRUE
+                 unlink(zippath)
+                 cat("Could not download sheet ", paste(ntsid, collapse=""), " (sheet may not exist)")
+               })
     } else {
-      cat("Skipping download of", paste(ntsid,collapse="-"), "\n")
+      cat("Skipping download of", paste(ntsid,collapse=""), "\n")
     }
-    if(!file.exists(folderpath) || forceextract) {
+    if((!file.exists(folderpath) || forceextract || forcedownload) && !skipextract) {
       cat("Extracting to", folderpath, "\n")
-      unzip(zipfile=zippath, exdir=folderpath)
+      unzip(zipfile=zippath, exdir=folderpath, overwrite=TRUE)
     } else {
       cat("Skipping extraction", "\n")
     }
   }
-  cat("Done")
+  cat("Done\n")
+}
+
+canvec.findlayer <- function(ntsid, layerid, cachedir=NULL) {
+  if(is.null(cachedir)) {
+    cachedir <- canvec.cachedir()
+  }
+  wd <- file.path(cachedir, canvec.filename(ntsid))
+  layername <- canvec.layers(layerid)
+  
+  if(length(ntsid)>=3) {
+    #canvec
+    files <- list.files(wd, pattern=paste0("*", paste0(toupper(layername), ".shp")))
+    if(length(files)==1) {
+      layername <- substr(files[1], 1, nchar(files[1])-4)
+      c(wd, layername)
+    } else {
+      warning("Layer ", layerid, " does not exist for NTS ", ntsid)
+      c(wd, NA)
+    }
+  } else if(length(ntsid)==2) {
+    #canvec+
+    c(wd, layername)
+  }
 }
 
 canvec.load <- function(ntsid, layerid, cachedir=NULL) {
   library(rgdal)
   if(is.null(cachedir)) {
-    cachedir <- canvec_cachedir()
+    cachedir <- canvec.cachedir()
   }
-  #check if file exists before reading
-  if(file.exists(canvec.shapefiles(ntsid, layerid, cachedir=cachedir))) {
-    layername <- canvec.layers(layerid)
-    wd <- paste(cachedir, canvec_filename(ntsid), sep="/")
-    readOGR(dsn=wd, layer=layername)
+  if(class(ntsid)=="list") {
+    out <- list()
+    for(singleid in ntsid) {
+      out[[length(out)+1]] <- canvec.load(singleid, layerid, cachedir)
+    }
+    out
   } else {
-    NULL
+    #check if file exists before reading
+    layerinfo <- canvec.findlayer(ntsid, layerid, cachedir)
+    if(is.na(layerinfo[2])) return(NULL) #shapefile not found in canvec
+    shapefile <- file.path(layerinfo[1], paste0(layerinfo[2], ".shp"))
+    if(file.exists(shapefile)) {
+      readOGR(dsn=layerinfo[1], layer=layerinfo[2])
+    } else {
+      warning("Layer ", layerid, " does not exist for NTS ", ntsid)
+      NULL
+    }
   }
 }
 
-canvec.qplot <- function(ntsid, river=TRUE, contour=TRUE, building=TRUE, road=TRUE,
+canvec.export <- function(ntsid, tofolder, layerids=NULL, cachedir=NULL, overwrite=TRUE) {
+
+  dir.create(tofolder)
+  
+  if(class(ntsid) != "list") {
+    ntsid <- list(ntsid)
+  }
+  if(is.null(cachedir)) {
+    cachedir <- canvec.cachedir()
+  }
+  if(is.null(layerids)) {
+    layerids <- canvec_layers$id
+  }
+  
+  layerinfo <- list()
+  filesto <- rep(NA, length(layerids)*length(ntsid))
+  for(i in 1:length(ntsid)) {
+    for(j in 1:length(layerids)) {
+      ind <- (i-1)*length(layerids)+j
+      layerinfo[[ind]] <- canvec.findlayer(ntsid[[i]], layerid=layerids[j], cachedir=cachedir)
+      filesto[ind] <- file.path(tofolder,
+                                paste(paste(ntsid[[i]], collapse=""), layerids[j], sep="_"))
+    }
+  }
+  
+  extensions <- c(".cpg", ".dbf", ".prj", ".shp", ".shx")
+  for(i in 1:length(layerinfo)) {
+    for(ext in extensions) {
+      filefrom <- file.path(layerinfo[[i]][1], paste0(layerinfo[[i]][2], ext))
+      if(file.exists(filefrom)) {
+        fileto <- paste0(filesto[i],ext)
+        cat("Copying", filefrom, "to", fileto, "\n")
+        file.copy(filefrom, fileto, overwrite=overwrite)
+      } else {
+        warning("File ", filefrom, " not found. not copied")
+      }
+    }
+    
+  }
+  
+}
+
+canvec.qplot <- function(ntsid=NULL, bbox=NULL, waterbody=TRUE, river=TRUE, contour=FALSE, building=FALSE, road=FALSE,
                          waterbody.col="lightblue", waterbody.border="lightblue", contour.col="brown",
                          contour.lwd=0.2, river.col="lightblue", river.lwd=1, road.col="black", road.lwd=0.5,
-                         building.pch=".", building.col="black", plotdata=TRUE, data=NULL, ...) {
-  supress_return = !is.null(data)
+                         building.pch=".", building.col="black", plotdata=TRUE, cachedir=NULL, data=NULL, atscale=nts.SCALE50K, ...) {
+  
+  
+  if(!is.null(bbox)) {
+    if(is.null(ntsid)) {
+      ntsid <- nts(bbox=bbox, atscale = atscale)
+    }
+    if(!exists("xlim"))
+      xlim <- bbox[1,]
+    if(!exists("ylim"))
+      ylim <- bbox[2,]
+  } else if(is.null(ntsid)) {
+    stop("No arguments specified for data to plot")
+  }
+  
+  if(is.null(cachedir)) {
+    cachedir <- canvec.cachedir()
+  }
+  
+  if(class(ntsid) != "list") {
+    ntsid <- list(ntsid)
+  }
+  
   if(is.null(data)) {
     #download
-    canvec.download(ntsid)
+    canvec.download(ntsid, cachedir=cachedir)
     #load data
     data <- list()
-    data$waterbody <- canvec.load(ntsid, "waterbody") #use as base layer, may change
   }
   
+  #does not take into account changed ntsids
+  if(waterbody && is.null(data$waterbody))
+    data$waterbody <- canvec.load(ntsid, "waterbody", cachedir=cachedir)
   if(building && is.null(data$building))
-    data$building <- canvec.load(ntsid, "building")
+    data$building <- canvec.load(ntsid, "building", cachedir=cachedir)
   if(river && is.null(data$river))
-    data$river <- canvec.load(ntsid, "river")
+    data$river <- canvec.load(ntsid, "river", cachedir=cachedir)
   if(road && is.null(data$road))
-    data$road <- canvec.load(ntsid, "road")
+    data$road <- canvec.load(ntsid, "road", cachedir=cachedir)
   if(contour && is.null(data$contour))
-    data$contour <- canvec.load(ntsid, "contour")
+    data$contour <- canvec.load(ntsid, "contour", cachedir=cachedir)
   
   if(plotdata) {
-    #waterbody must be true, need some base layer to plot. use mapsheet bg in the future?
-    plot(data$waterbody, col=waterbody.col, border=waterbody.border, ...)
+    #plot corners of mapsheet extents 
+    if(class(ntsid)=="list") {
+      if(length(ntsid)==0) stop("Cannot plot background for zero mapsheets")
+      bbox1 <- nts.bbox(ntsid[[1]])
+      for(singleid in ntsid) {
+        bbox2 <- nts.bbox(singleid)
+        bbox1 <- matrix(c(min(bbox1[1,1], bbox2[1,1]), min(bbox1[2,1], bbox2[2,1]),
+                         max(bbox1[1,2], bbox2[1,2]), max(bbox1[2,2], bbox2[2,2])), ncol=2, byrow=FALSE)
+      }
+    } else {
+      bbox1 = nts.bbox(ntsid)
+    }
+    coords <- coordinates(t(bbox1))
+    spoints = SpatialPoints(coords, proj4string = CRS("+proj=longlat +ellps=GRS80 +no_defs"))
+    
+    if(!exists("xlim"))
+      xlim <- bbox1[1,]
+    if(!exists("ylim"))
+      ylim <- bbox1[2,]
+    plot(spoints, pch=".", xlim=xlim, ylim=ylim, ...)
+    
+    if(waterbody)
+      for(layer in data$waterbody) plot(layer, add=T, col=waterbody.col, border=waterbody.border)
     if(contour)
-      plot(data$contour, add=T, col=contour.col, lwd=contour.lwd)
+      for(layer in data$contour) plot(layer, add=T, col=contour.col, lwd=contour.lwd)
     if(river)
-      plot(data$river, add=T, col=river.col, lwd=river.lwd)
+      for(layer in data$river) plot(layer, add=T, col=river.col, lwd=river.lwd)
     if(building)
-      plot(data$building, add=T, pch=building.pch, col=building.col)
+      for(layer in data$building) plot(layer, add=T, pch=building.pch, col=building.col)
     if(road)
-      plot(data$road, add=T, lwd=road.lwd, col=road.col)
+      for(layer in data$road) plot(layer, add=T, lwd=road.lwd, col=road.col)
   }
   
-  if(!supress_return)
-    data
+  invisible(data)
 }
