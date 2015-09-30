@@ -46,7 +46,8 @@ canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), contour=TRUE, building=T
 #method returns plot data argument so data does not need to be loaded each time. this will not work
 #when changing nts sheets.
 plotdata <- canvec.qplot(nts("21h1"), contour=TRUE, building=TRUE, road=TRUE)
-plotdata <- canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), contour=TRUE, building=TRUE, road=TRUE,
+plotdata <- canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), 
+                         contour=TRUE, building=TRUE, road=TRUE,
                          data=plotdata)
 
 #easy exporting with human readable names

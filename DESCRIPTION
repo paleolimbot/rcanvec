@@ -1,12 +1,13 @@
 Package: rcanvec
 Type: Package
-Title: What the package does (short line)
+Title: Access and plot CanVec and CanVec+ data for rapid basemap creation in Canada
 Version: 0.1.1.9000
 Date: 2015-09-26
 Authors@R: person("Dewey", "Dunnington", email = "dewey@fishandwhistle.net",
   role = c("aut", "cre"))
-Maintainer: Dewey Dunnington <apps@fishandwhistle.net>
+Maintainer: Dewey Dunnington <dewey@fishandwhistle.net>
 Description: More about what it does (maybe more than one line)
-License: What license is it under?
+License: GPL2
 Depends: rgdal, sp
-URL: http://www.fishandwhistle.net/
+URL: https://github.com/paleolimbot/rcanvec
+BugReports: http://github.com/paleolimbot/rcanvec
