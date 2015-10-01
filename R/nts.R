@@ -98,6 +98,8 @@
   stop("Error in .ntsstring(), reached end of function by error")
 }
 
+#' Generate NTS References
+#' 
 #' Generate one or more NTS references based on arguments provided.
 #' 
 #' @param ... An arbitrary number of strings in the form 21h1 to be parsed
@@ -105,7 +107,15 @@
 #' @param lon A vector of longitude values
 #' @param bbox A bounding box in the form returned by sp::bbox()
 #' @param atscale An integer value describing scale, either 1 (250k) or 2 (50k)
-#' @return one or more NTS references.
+#' @return one or more NTS references in the form c("021", "H", "01")
+#' @examples
+#' nts('21h')
+#' nts('21h1')
+#' nts('21h1', '21a16', '021A15')
+#' nts(lat=45.2, lon=-64.32)
+#' nts(lat=c(45.2, 46.2), lon=c(-64.32, -64.81))
+#' nts(bbox=makebbox(45.125, -64.25, 44.875, -64.75))
+#' 
 #' @export
 #' 
 nts <- function(..., lat=NULL, lon=NULL, bbox=NULL, atscale=nts.SCALE50K) {
@@ -138,16 +148,22 @@ nts <- function(..., lat=NULL, lon=NULL, bbox=NULL, atscale=nts.SCALE50K) {
   }
 }
 
+#' Generate NTS Reference Strings
+#' 
 #' Generate NTS strings from NTS references or other arguments to generate
 #' such a list from nts() based on arguments provided.
 #' 
-#' @param ... An arbitrary number of NTS references in the form c("021", "H", "01") 
-#' to be converted
+#' @param ntsid An arbitrary number of NTS references in the form c("021", "H", "01") 
+#' or \code{list(c("021", "H", "01"), c("021", "A", "16"))} to be converted
 #' @param lat A vector of latitude values
 #' @param lon A vector of longitude values
 #' @param bbox A bounding box in the form returned by sp::bbox()
 #' @param atscale An integer value describing scale, either 1 (250k) or 2 (50k)
-#' @return one or more NTS references.
+#' @return a character vector of NTS reference strings in the form "021H01".
+#' @examples
+#' ntsstring(c("021", "H", "01"))
+#' ntsstring(bbox=makebbox(45.125, -64.25, 44.875, -64.75))
+#' 
 #' @export
 #' 
 ntsstring <- function(ntsid=NULL, lat=NULL, lon=NULL, bbox=NULL, atscale=nts.SCALE50K) {

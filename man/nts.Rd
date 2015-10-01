@@ -2,7 +2,7 @@
 % Please edit documentation in R/nts.R
 \name{nts}
 \alias{nts}
-\title{Generate one or more NTS references based on arguments provided.}
+\title{Generate NTS References}
 \usage{
 nts(..., lat = NULL, lon = NULL, bbox = NULL, atscale = nts.SCALE50K)
 }
@@ -18,9 +18,17 @@ nts(..., lat = NULL, lon = NULL, bbox = NULL, atscale = nts.SCALE50K)
 \item{atscale}{An integer value describing scale, either 1 (250k) or 2 (50k)}
 }
 \value{
-one or more NTS references.
+one or more NTS references in the form c("021", "H", "01")
 }
 \description{
 Generate one or more NTS references based on arguments provided.
+}
+\examples{
+nts('21h')
+nts('21h1')
+nts('21h1', '21a16', '021A15')
+nts(lat=45.2, lon=-64.32)
+nts(lat=c(45.2, 46.2), lon=c(-64.32, -64.81))
+nts(bbox=makebbox(45.125, -64.25, 44.875, -64.75))
 }
 

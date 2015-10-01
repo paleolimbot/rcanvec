@@ -2,11 +2,15 @@
 % Please edit documentation in R/ntstiles.R
 \name{nts.bbox}
 \alias{nts.bbox}
-\title{Get bounding box of a particular NTS Sheet.}
+\title{Get Bounding Box of an NTS Reference}
 \usage{
 nts.bbox(ntsid)
 }
+\arguments{
+\item{ntsid}{}
+}
 \description{
-Get bounding box of a particular NTS Sheet.
+Calculates the bounding box in latitude/longitude described by
+a particular NTS Reference.
 }
 

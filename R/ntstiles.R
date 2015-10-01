@@ -321,17 +321,33 @@ nts.bybboxgeneric <-function(bbox, tilefuncx, tilefuncy, idfunc) {
 
 # User friendly functions ----
 
+#' A contstant denoting NTS Series scale (0)
+#' @export
+nts.SCALESERIES <- 0
 
-nts.SCALE_SERIES <- 0
-#' @export
+#'  A constant denoting NTS Map Area (1:250k) scale (1)
+#'  @export
 nts.SCALE250K <- 1
-#' @export
+
+#'  A constant denoting NTS Map Sheet (1:50k) scale (2)
+#'  @export
 nts.SCALE50K <- 2
 
-#' Get NTS by bounding box
+#' Get NTS References by Bounding Box
+#' 
+#' Retreive a list of NTS references at a given scale by bounding box.
+#' Bounding box is in the form returned by \code{sp::bbox()}. NTS References
+#' all have a valid series component (e.g. "021"), but map area (e.g. "H")
+#' and map sheet (e.g. "01") are not checked to make sure they exist.
+#' 
+#' @param bbox A bounding box of lat/lon values in the form returned by \code{sp::bbox()}.
+#' @param atscale One of \code{nts.SCALESERIES}, \code{nts.SCALE250K}, or \code{nts.SCALE50K}
+#' @return A \code{list} object containing zero or more NTS References.
+#' @seealso nts
+#' 
 #' @export
 nts.bybbox <- function(bbox, atscale) {
-  if(atscale == nts.SCALE_SERIES) {
+  if(atscale == nts.SCALESERIES) {
     tilexfunc <- nts.tileseriesx
     tileyfunc <- nts.tileseriesy
     idfunc <- nts.idseries
@@ -349,11 +365,20 @@ nts.bybbox <- function(bbox, atscale) {
   nts.bybboxgeneric(bbox, tilexfunc, tileyfunc, idfunc)
 }
 
-#' Get NTS id at a given lat/lon and scale
+#' Get NTS Reference At A Location
+#' 
+#' Get NTS Reference(s) based on location at a given scale.
+#' 
+#' @param lat A scalar or vector of latitude values
+#' @param lon A scalar or vector of longitude values of same length as \code{lat}
+#' @return A \code{list} of NTS References
+#' 
+#' @seealso nts
+#' 
 #' @export
 nts.idat <- function(lat, lon, atscale) {
   if(length(lat) != length(lon)) stop("Length of lat and lon arguments must be the same in nts.idat")
-  if(atscale == nts.SCALE_SERIES) {
+  if(atscale == nts.SCALESERIES) {
     tilefunc <- nts.tileseries
     idfunc <- nts.idseries
   } else if(atscale == nts.SCALE250K) {
@@ -373,7 +398,13 @@ nts.idat <- function(lat, lon, atscale) {
   out
 }
 
-#' Get bounding box of a particular NTS Sheet.
+#' Get Bounding Box of an NTS Reference
+#' 
+#' Calculates the bounding box in latitude/longitude described by
+#' a particular NTS Reference.
+#' 
+#' @param ntsid 
+#' 
 #' @export
 nts.bbox <- function(ntsid) {
   if(class(ntsid)=="list") {

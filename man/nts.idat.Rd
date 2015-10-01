@@ -2,11 +2,22 @@
 % Please edit documentation in R/ntstiles.R
 \name{nts.idat}
 \alias{nts.idat}
-\title{Get NTS id at a given lat/lon and scale}
+\title{Get NTS Reference At A Location}
 \usage{
 nts.idat(lat, lon, atscale)
 }
+\arguments{
+\item{lat}{A scalar or vector of latitude values}
+
+\item{lon}{A scalar or vector of longitude values of same length as \code{lat}}
+}
+\value{
+A \code{list} of NTS References
+}
 \description{
-Get NTS id at a given lat/lon and scale
+Get NTS Reference(s) based on location at a given scale.
+}
+\seealso{
+nts
 }
 

@@ -2,11 +2,25 @@
 % Please edit documentation in R/ntstiles.R
 \name{nts.bybbox}
 \alias{nts.bybbox}
-\title{Get NTS by bounding box}
+\title{Get NTS References by Bounding Box}
 \usage{
 nts.bybbox(bbox, atscale)
 }
+\arguments{
+\item{bbox}{A bounding box of lat/lon values in the form returned by \code{sp::bbox()}.}
+
+\item{atscale}{One of \code{nts.SCALESERIES}, \code{nts.SCALE250K}, or \code{nts.SCALE50K}}
+}
+\value{
+A \code{list} object containing zero or more NTS References.
+}
 \description{
-Get NTS by bounding box
+Retreive a list of NTS references at a given scale by bounding box.
+Bounding box is in the form returned by \code{sp::bbox()}. NTS References
+all have a valid series component (e.g. "021"), but map area (e.g. "H")
+and map sheet (e.g. "01") are not checked to make sure they exist.
+}
+\seealso{
+nts
 }
 

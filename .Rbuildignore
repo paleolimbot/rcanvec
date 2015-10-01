@@ -1,3 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^rcanvec\.cache$
+^demo\.R$
+^data-raw$

@@ -2,13 +2,27 @@
 % Please edit documentation in R/canvec.R
 \name{makebbox}
 \alias{makebbox}
-\title{Create a bounding box like that returned by sp::bbox()
-from a more preditable format}
+\title{Create a Bounding Box}
 \usage{
 makebbox(n, e, s, w)
 }
+\arguments{
+\item{n}{North bounding latitude}
+
+\item{e}{East bounding longitude}
+
+\item{s}{South bounding latitude}
+
+\item{w}{West bounding longitude}
+}
+\value{
+A 2x2 matrix describing a bounding box like that returned by \code{sp::bbox()}
+}
 \description{
-Create a bounding box like that returned by sp::bbox()
-from a more preditable format
+Convencience method to create a bounding box like that returned by \code{sp::bbox()}.
+To generate a bounding box from lists of lat/lon values use \code{sp::bbox(cbind(lons, lats))}.
+}
+\seealso{
+sp::bbox
 }
 

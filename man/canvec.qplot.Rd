@@ -2,8 +2,7 @@
 % Please edit documentation in R/canvec.R
 \name{canvec.qplot}
 \alias{canvec.qplot}
-\title{Quickly plot one more NTS references or automatically look up references based on a bbox
-(in the same format returned by sp::bbox())}
+\title{Quickly Plot CanVec Data}
 \usage{
 canvec.qplot(ntsid = NULL, bbox = NULL, waterbody = TRUE, river = TRUE,
   contour = FALSE, building = FALSE, road = FALSE,
