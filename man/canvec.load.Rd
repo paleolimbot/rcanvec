@@ -21,4 +21,7 @@ A sp::Spatial* object loaded from the given shapefile or a \code{list}
 \description{
 Load layerid for NTS reference(s) that were previously downloaded to cachedir.
 }
+\examples{
+buildings <- canvec.load(nts("21h1"), "building")
+}
 

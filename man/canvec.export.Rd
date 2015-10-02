@@ -22,4 +22,7 @@ Export \code{layerids} for one or more NTS reference(s) \code{ntsid} to path \co
 automatically renaming layers based on their layerid. Generates warnings if files
 cannot be found.
 }
+\examples{
+canvec.export(nts("21h01"), "~/canvecdata", layerids=c("road", "river"))
+}
 

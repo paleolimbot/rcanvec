@@ -10,6 +10,9 @@ nts.idat(lat, lon, atscale)
 \item{lat}{A scalar or vector of latitude values}
 
 \item{lon}{A scalar or vector of longitude values of same length as \code{lat}}
+
+\item{atscale}{One of \code{nts.SCALESERIES}, \code{nts.SCALE250K},
+or \code{nts.SCALE50K}}
 }
 \value{
 A \code{list} of NTS References

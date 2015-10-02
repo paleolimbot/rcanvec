@@ -18,22 +18,6 @@ canvec.cachedir <- function() {
   dirname
 }
 
-#' Create a Bounding Box
-#' 
-#' Convencience method to create a bounding box like that returned by \code{sp::bbox()}.
-#' To generate a bounding box from lists of lat/lon values use \code{sp::bbox(cbind(lons, lats))}.
-#' 
-#' @param n North bounding latitude
-#' @param e East bounding longitude
-#' @param s South bounding latitude
-#' @param w West bounding longitude
-#' @return A 2x2 matrix describing a bounding box like that returned by \code{sp::bbox()}
-#' @seealso sp::bbox
-#' @export
-makebbox <- function(n, e, s, w) {
-  matrix(c(w, s, e, n), byrow=FALSE, ncol=2, dimnames=list(c("x", "y"), c("min", "max")))
-}
-
 # Functions to get file names --------
 
 canvec.layers <- function(...) {
@@ -103,6 +87,7 @@ canvec.url <- function(ntsid, server="http://ftp2.cits.rncan.gc.ca/pub") {
 #' @param extract Pass \code{extract=FALSE} to download the archive without extracting.
 #' @param cachedir Pass a specific cache directory in which to download and extract the file.
 #'                  Default value is that returned by \code{canvec.cachedir()}
+#' @examples canvec.download(nts('21h1'))
 #' 
 #' @export
 canvec.download <- function(..., forcedownload=FALSE, forceextract=FALSE, extract=TRUE, cachedir=NULL) {
@@ -188,6 +173,9 @@ canvec.findlayer <- function(directory, layerid) {
 #'                  Default value is that returned by \code{canvec.cachedir()}
 #' @return A sp::Spatial* object loaded from the given shapefile or a \code{list}
 #'         of Spatial* objects if more than one directory is specified.
+#'         
+#' @examples buildings <- canvec.load(nts("21h1"), "building")
+#'
 #' @export
 canvec.load <- function(ntsid, layerid, cachedir=NULL) {
   if(is.null(cachedir)) {
@@ -215,13 +203,14 @@ canvec.load <- function(ntsid, layerid, cachedir=NULL) {
 #' @param layerid A single layer id as listed in \code{canvec_layers$id}
 #' @return A sp::Spatial* object loaded from the given shapefile or a \code{list}
 #'         of Spatial* objects if more than one directory is specified.
+#' @seealso canvec.load
 #' 
 #' @export
 canvec.loadfromdir <- function(directory, layerid) {
   if(length(directory) > 1) {
     out <- list()
-    for(singleid in ntsid) {
-      out[[length(out)+1]] <- canvec.load(directory, layerid)
+    for(directory_single in directory) {
+      out[[length(out)+1]] <- canvec.load(directory_single, layerid)
     }
     out
   } else {
@@ -243,6 +232,8 @@ canvec.loadfromdir <- function(directory, layerid) {
 #'                  all layers.
 #' @param cachedir Pass a specific cache directory in which files have been extracted.
 #'                  Default value is that returned by \code{canvec.cachedir()}
+#'                  
+#' @examples canvec.export(nts("21h01"), "~/canvecdata", layerids=c("road", "river"))
 #' 
 #' @export
 canvec.export <- function(ntsid, tofolder, layerids=NULL, cachedir=NULL) {
@@ -289,90 +280,4 @@ canvec.export <- function(ntsid, tofolder, layerids=NULL, cachedir=NULL) {
   
 }
 
-#' Quickly Plot CanVec Data
-#' 
-#' Quickly plot one more NTS references or automatically look up references based on a bbox
-#' (in the same format returned by sp::bbox())
-#' @export
-canvec.qplot <- function(ntsid=NULL, bbox=NULL, waterbody=TRUE, river=TRUE, contour=FALSE, building=FALSE, road=FALSE,
-                         waterbody.col="lightblue", waterbody.border="lightblue", contour.col="brown",
-                         contour.lwd=0.2, river.col="lightblue", river.lwd=1, road.col="black", road.lwd=0.5,
-                         building.pch=".", building.col="black", plotdata=TRUE, cachedir=NULL, data=NULL, atscale=nts.SCALE50K, ...) {
-  
-  
-  if(!is.null(bbox)) {
-    if(is.null(ntsid)) {
-      ntsid <- nts(bbox=bbox, atscale = atscale)
-    }
-    if(!exists("xlim"))
-      xlim <- bbox[1,]
-    if(!exists("ylim"))
-      ylim <- bbox[2,]
-  } else if(is.null(ntsid)) {
-    stop("No arguments specified for data to plot")
-  }
-  
-  if(is.null(cachedir)) {
-    cachedir <- canvec.cachedir()
-  }
-  
-  if(class(ntsid) != "list") {
-    ntsid <- list(ntsid)
-  }
-  
-  if(is.null(data)) {
-    #download
-    canvec.download(ntsid, cachedir=cachedir)
-    #load data
-    data <- list()
-  }
-  
-  #does not take into account changed ntsids
-  if(waterbody && is.null(data$waterbody))
-    data$waterbody <- canvec.load(ntsid, "waterbody", cachedir=cachedir)
-  if(building && is.null(data$building))
-    data$building <- canvec.load(ntsid, "building", cachedir=cachedir)
-  if(river && is.null(data$river))
-    data$river <- canvec.load(ntsid, "river", cachedir=cachedir)
-  if(road && is.null(data$road))
-    data$road <- canvec.load(ntsid, "road", cachedir=cachedir)
-  if(contour && is.null(data$contour))
-    data$contour <- canvec.load(ntsid, "contour", cachedir=cachedir)
-  
-  if(plotdata) {
-    #plot corners of mapsheet extents 
-    if(class(ntsid)=="list") {
-      if(length(ntsid)==0) stop("Cannot plot background for zero mapsheets")
-      bbox1 <- nts.bbox(ntsid[[1]])
-      for(singleid in ntsid) {
-        bbox2 <- nts.bbox(singleid)
-        bbox1 <- matrix(c(min(bbox1[1,1], bbox2[1,1]), min(bbox1[2,1], bbox2[2,1]),
-                         max(bbox1[1,2], bbox2[1,2]), max(bbox1[2,2], bbox2[2,2])), ncol=2, byrow=FALSE)
-      }
-    } else {
-      bbox1 = nts.bbox(ntsid)
-    }
-    coords <- coordinates(t(bbox1))
-    spoints = SpatialPoints(coords, proj4string = CRS("+proj=longlat +ellps=GRS80 +no_defs"))
-    
-    #THIS DOES NOT WORK AS PREDICTED, if xlim or ylim are passed this generates an error
-    if(!exists("xlim"))
-      xlim <- bbox1[1,]
-    if(!exists("ylim"))
-      ylim <- bbox1[2,]
-    plot(spoints, pch=".", xlim=xlim, ylim=ylim, ...)
-    
-    if(waterbody)
-      for(layer in data$waterbody) plot(layer, add=TRUE, col=waterbody.col, border=waterbody.border)
-    if(contour)
-      for(layer in data$contour) plot(layer, add=TRUE, col=contour.col, lwd=contour.lwd)
-    if(river)
-      for(layer in data$river) plot(layer, add=TRUE, col=river.col, lwd=river.lwd)
-    if(building)
-      for(layer in data$building) plot(layer, add=TRUE, pch=building.pch, col=building.col)
-    if(road)
-      for(layer in data$road) plot(layer, add=TRUE, lwd=road.lwd, col=road.col)
-  }
-  
-  invisible(data)
-}
+

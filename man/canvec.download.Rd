@@ -19,9 +19,12 @@ present.}
 \item{extract}{Pass \code{extract=FALSE} to download the archive without extracting.}
 
 \item{cachedir}{Pass a specific cache directory in which to download and extract the file.
-                 Default value is that returned by \code{canvec.cachedir()}}
+Default value is that returned by \code{canvec.cachedir()}}
 }
 \description{
 Downloads CanVec or CanVec+ data (as applicable) to \code{cachedir} and extracts the archive.
+}
+\examples{
+canvec.download(nts('21h1'))
 }
 

@@ -75,24 +75,27 @@ plot(rivers, add=TRUE, col="lightblue")
 plot(buildings, add=TRUE, pch=".")
 plot(roads, add=TRUE, lwd=0.5)
 
-#equivalent syntax in canvec.qplot()
-canvec.qplot(nts("21h1"), contour=TRUE, building=TRUE, road=TRUE)
-canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), contour=TRUE, building=TRUE, road=TRUE)
-
-#method returns plot data argument so data does not need to be loaded each time. this will not work
-#when changing nts sheets.
-plotdata <- canvec.qplot(nts("21h1"), contour=TRUE, building=TRUE, road=TRUE)
-plotdata <- canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), contour=TRUE, building=TRUE, road=TRUE,
-                         data=plotdata)
-
-#easy exporting with human readable names
-canvec.export(nts("21h01"), "~/canvecdata", layerids=c("road", "river"))
-# ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.dbf to ~/canvecdata/021H01_road.dbf 
-# ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.prj to ~/canvecdata/021H01_road.prj 
-# ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.shp to ~/canvecdata/021H01_road.shp 
-# ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.shx to ~/canvecdata/021H01_road.shx 
-# ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.dbf to ~/canvecdata/021H01_river.dbf 
-# ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.prj to ~/canvecdata/021H01_river.prj 
-# ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.shp to ~/canvecdata/021H01_river.shp 
-# ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.shx to ~/canvecdata/021H01_river.shx
+\donttest{
+    #equivalent syntax in canvec.qplot()
+    canvec.qplot(nts("21h1"), contour=TRUE, building=TRUE, road=TRUE)
+    canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), contour=TRUE, building=TRUE, road=TRUE)
+    
+    #method returns plot data argument so data does not need to be loaded each time. 
+    #this will not work when changing nts sheets.
+    plotdata <- canvec.qplot(nts("21h1"), contour=TRUE, building=TRUE, road=TRUE)
+    plotdata <- canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), 
+                              contour=TRUE, building=TRUE, road=TRUE,
+                              data=plotdata)
+    
+    #easy exporting with human readable names
+    canvec.export(nts("21h01"), "~/canvecdata", layerids=c("road", "river"))
+    # ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.dbf to ~/canvecdata/021H01_road.dbf 
+    # ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.prj to ~/canvecdata/021H01_road.prj 
+    # ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.shp to ~/canvecdata/021H01_road.shp 
+    # ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.shx to ~/canvecdata/021H01_road.shx 
+    # ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.dbf to ~/canvecdata/021H01_river.dbf 
+    # ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.prj to ~/canvecdata/021H01_river.prj 
+    # ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.shp to ~/canvecdata/021H01_river.shp 
+    # ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.shx to ~/canvecdata/021H01_river.shx
+  }
 }

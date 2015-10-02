@@ -18,4 +18,7 @@ A sp::Spatial* object loaded from the given shapefile or a \code{list}
 \description{
 Load layerid from a directory or directories that contain(s) CanVec data.
 }
+\seealso{
+canvec.load
+}
 
