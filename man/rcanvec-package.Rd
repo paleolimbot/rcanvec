@@ -3,32 +3,32 @@
 \alias{rcanvec}
 \docType{package}
 \title{
-What the package does (short line)
-   package title   
+Find, load, and plot Canadian vector basemap data   
 }
 \description{
-More about what it does (maybe more than one line)
-   A concise (1-5 lines) description of the package   
+Provides an interface to the National Topographic System (NTS), which is
+the way in which several a number of freely available Canadian datasets 
+are available. CanVec and CanVec+ datasets, which include all data used
+to create Canadian topographic maps, are two such items that are useful
+in creating vector-based maps for locations across Canada.
 }
 \details{
 \tabular{ll}{
 Package: \tab rcanvec\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2015-09-26\cr
-License: \tab What license is it under?\cr
+Version: \tab 0.1.0\cr
+Date: \tab 2015-10-02\cr
+License: \tab GPL-2\cr
 }
    An overview of how to use the package, including the most important functions   
 }
 \author{
-Who wrote it
-
-Maintainer: Who to complain to <yourfault@somewhere.net>
-   The author and/or maintainer of the package   
+Dewey Dunnington <dewey@fishandwhistle.net>
 }
 \references{
-   Literature or other references for background information   
-}
+   \link[http://ftp2.cits.rncan.gc.ca/pub/canvec+/doc/CanVec+_product_specifications.pdf]{CanVec+ Product Specifications}
+   \link[http://www.nrcan.gc.ca/earth-sciences/geography/topographic-information/maps/9763]{National Topographic System (NTS) Documentation} 
+}  
 \keyword{ package }
 \seealso{
    Optional links to other man pages, e.g.   
@@ -50,32 +50,32 @@ nts(bbox=makebbox(45.125, -64.25, 44.875, -64.75))
 ntsstring(c("021", "H", "01"))
 ntsstring(bbox=makebbox(45.125, -64.25, 44.875, -64.75))
 
-
-#download canvec or canvec+ data. 250k references use canvec+ (large amounts of data)
-#and 50k references use canvec data (older but distributed in smaller chunks).
-canvec.download(nts('21h1'))
-
-#load data
-buildings <- canvec.load(nts("21h1"), "building")
-lakes <- canvec.load(nts("21h1"), "waterbody")
-rivers <- canvec.load(nts('21h1'), "river")
-roads <- canvec.load(nts('21h1'), "road")
-contours <- canvec.load(nts('21h1'), "contour")
-
-#plot data
-plot(lakes, col="lightblue", border="lightblue")
-plot(rivers, add=TRUE, col="lightblue")
-plot(buildings, add=TRUE, pch=".")
-
-#zoomed in
-plot(lakes, col="lightblue", border="lightblue", 
-     xlim=c(-64.4,-64.35), ylim=c(45.05,45.1))
-plot(contours, add=TRUE, col="brown", lwd=0.2)
-plot(rivers, add=TRUE, col="lightblue")
-plot(buildings, add=TRUE, pch=".")
-plot(roads, add=TRUE, lwd=0.5)
-
 \donttest{
+    #download canvec or canvec+ data. 250k references use canvec+ (large amounts of data)
+    #and 50k references use canvec data (older but distributed in smaller chunks).
+    canvec.download(nts('21h1'))
+    
+    #load data
+    buildings <- canvec.load(nts("21h1"), "building")
+    lakes <- canvec.load(nts("21h1"), "waterbody")
+    rivers <- canvec.load(nts('21h1'), "river")
+    roads <- canvec.load(nts('21h1'), "road")
+    contours <- canvec.load(nts('21h1'), "contour")
+    
+    #plot data
+    plot(lakes, col="lightblue", border="lightblue")
+    plot(rivers, add=TRUE, col="lightblue")
+    plot(buildings, add=TRUE, pch=".")
+    
+    #zoomed in
+    plot(lakes, col="lightblue", border="lightblue", 
+         xlim=c(-64.4,-64.35), ylim=c(45.05,45.1))
+    plot(contours, add=TRUE, col="brown", lwd=0.2)
+    plot(rivers, add=TRUE, col="lightblue")
+    plot(buildings, add=TRUE, pch=".")
+    plot(roads, add=TRUE, lwd=0.5)
+
+
     #equivalent syntax in canvec.qplot()
     canvec.qplot(nts("21h1"), contour=TRUE, building=TRUE, road=TRUE)
     canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), contour=TRUE, building=TRUE, road=TRUE)
