@@ -18,16 +18,28 @@ makebbox <- function(n, e, s, w) {
 
 #' Query Google For A Bounding Box
 #' 
-#' Use the \code{ggmaps::geocode} function to retreive a bounding box for a given query.
+#' Use the Data Science Toolkit (\url{http://www.datasciencetoolkit.org/about}) to 
+#' retreive a bounding box for the given query. Implemented
+#' from the \code{ggmap:geocode} function from the \code{ggmap}
+#' package (\url{https://cran.r-project.org/web/packages/ggmap/index.html}) 
+#' by David Kahle to remove dependencies
+#' of \code{ggmap} that are not necessary for \code{rcanvec}.
 #' 
 #' @param querystring The search query
 #' @return A 2x2 matrix describing a bounding box like that returned by \code{sp::bbox()}
 #' 
+#' @examples
+#' \donttest{
+#' searchbbox("kings county, NS")
+#' searchbbox("University Ave. Wolfville NS")
+#' searchbbox("Wolfville ns")
+#' }
+#' 
 #' @export
 #' 
 searchbbox <- function(querystring) {
-  out <- ggmap::geocode(querystring, output="all")
-  if(out$status != "OK") stop("ggmaps::geocode returned with status ", out$status)
+  out <- geocode(querystring, output="all")
+  if(out$status != "OK") stop("geocode returned with status ", out$status)
   if(length(out$results) == 0) stop("No results found for query ", querystring)
   if(length(out$results) > 1) warning("More than one result found, loading first result: ", 
                               out$results[[1]]$formatted_address)

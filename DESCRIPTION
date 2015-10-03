@@ -6,9 +6,14 @@ Date: 2015-09-26
 Authors@R: person("Dewey", "Dunnington", email = "dewey@fishandwhistle.net",
   role = c("aut", "cre"))
 Maintainer: Dewey Dunnington <dewey@fishandwhistle.net>
-Description: More about what it does (maybe more than one line)
+Description: Provides an interface to the National Topographic System (NTS), which is
+ the way in which several a number of freely available Canadian datasets 
+ are available. CanVec and CanVec+ datasets, which include all data used
+ to create Canadian topographic maps, are two such items that are useful
+ in creating vector-based maps for locations across Canada.
 License: GPL-2
 Depends: R (>= 2.10), rgdal
-Suggests: ggmap
+Imports: rjson, digest
 URL: https://github.com/paleolimbot/rcanvec
 BugReports: http://github.com/paleolimbot/rcanvec
+LazyData: true

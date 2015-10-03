@@ -25,6 +25,8 @@ Default value is that returned by \code{canvec.cachedir()}}
 Downloads CanVec or CanVec+ data (as applicable) to \code{cachedir} and extracts the archive.
 }
 \examples{
+\donttest{
 canvec.download(nts('21h1'))
+}
 }
 

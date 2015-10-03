@@ -23,6 +23,8 @@ automatically renaming layers based on their layerid. Generates warnings if file
 cannot be found.
 }
 \examples{
+\donttest{
 canvec.export(nts("21h01"), "~/canvecdata", layerids=c("road", "river"))
+}
 }
 

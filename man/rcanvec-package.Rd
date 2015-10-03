@@ -20,20 +20,29 @@ Version: \tab 0.1.0\cr
 Date: \tab 2015-10-02\cr
 License: \tab GPL-2\cr
 }
-   An overview of how to use the package, including the most important functions   
+This package provides access to the CanVec/CanVec+ datasets via the \code{canvec.download()}
+function. CanVec data is organized by National Topographic System number (e.g. 021H01), 
+so the \code{nts()} function is provided to look up NTS number by location (e.g. lat/lon),
+parsed text (e.g. "21h1"), or bounding box. If the \code{ggmap} package is available, 
+searching a bounding box based on location is possible (e.g. \code{searchbbox("wolfville ns")}).
+Using the \code{canvec.qplot()} function, this data can be plotted using default options for
+standard layers. Theoretically, it is possible to make a vector-based map of any location 
+in Canada with one line of code: \code{canvec.qplot(bbox=searchbbox("wolfville ns"))}. For
+prettier maps, the \code{canvec.export()} function exports shapefiles in a human-readable
+format (e.g. 021H01_building.shp instead of 021h01_17_0_BS_2010009_0.shp). If more refined
+plotting or manipulation is desired, further functions are available to manually load or
+obtain filenames of cached files. Files are downloaded to the working directory by default,
+although this location can be defined using the \code{cachedir} argument available to
+many functions.
 }
 \author{
 Dewey Dunnington <dewey@fishandwhistle.net>
 }
 \references{
-   \link[http://ftp2.cits.rncan.gc.ca/pub/canvec+/doc/CanVec+_product_specifications.pdf]{CanVec+ Product Specifications}
-   \link[http://www.nrcan.gc.ca/earth-sciences/geography/topographic-information/maps/9763]{National Topographic System (NTS) Documentation} 
+   \href{http://ftp2.cits.rncan.gc.ca/pub/canvec+/doc/CanVec+_product_specifications.pdf}{CanVec+ Product Specifications}
+   \href{http://www.nrcan.gc.ca/earth-sciences/geography/topographic-information/maps/9763}{National Topographic System (NTS) Documentation} 
 }  
 \keyword{ package }
-\seealso{
-   Optional links to other man pages, e.g.   
-   \code{\link[<pkg>:<pkg>-package]{<pkg>}}   
-}
 \examples{
 
 #nts() function generates nts references based on lat, lon, or
@@ -49,6 +58,10 @@ nts(bbox=makebbox(45.125, -64.25, 44.875, -64.75))
 #arguments as nts() and returns a string vector instead.
 ntsstring(c("021", "H", "01"))
 ntsstring(bbox=makebbox(45.125, -64.25, 44.875, -64.75))
+
+#bbox functions make it easy to manipulate bounding boxes
+wolfville <- searchbbox("wolfville ns") #requires {ggmap} to geocode query
+wolfvillezoomedout <- zoom(wolfville, 0.5)
 
 \donttest{
     #download canvec or canvec+ data. 250k references use canvec+ (large amounts of data)
@@ -77,14 +90,15 @@ ntsstring(bbox=makebbox(45.125, -64.25, 44.875, -64.75))
 
 
     #equivalent syntax in canvec.qplot()
-    canvec.qplot(nts("21h1"), contour=TRUE, building=TRUE, road=TRUE)
-    canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), contour=TRUE, building=TRUE, road=TRUE)
+    canvec.qplot(nts("21h1"), layers=c("waterbody", "contour", "river", "building", "road"))
+    canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), 
+                layers=c("waterbody", "contour", "river", "building", "road"))
     
     #method returns plot data argument so data does not need to be loaded each time. 
     #this will not work when changing nts sheets.
-    plotdata <- canvec.qplot(nts("21h1"), contour=TRUE, building=TRUE, road=TRUE)
+    plotdata <- canvec.qplot(nts("21h1"), layers=c("waterbody", "contour", "river"))
     plotdata <- canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), 
-                              contour=TRUE, building=TRUE, road=TRUE,
+                              layers=c("waterbody", "contour", "river"),
                               data=plotdata)
     
     #easy exporting with human readable names

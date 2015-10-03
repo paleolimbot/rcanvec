@@ -13,6 +13,18 @@ searchbbox(querystring)
 A 2x2 matrix describing a bounding box like that returned by \code{sp::bbox()}
 }
 \description{
-Use the \code{ggmaps::geocode} function to retreive a bounding box for a given query.
+Use the Data Science Toolkit (\url{http://www.datasciencetoolkit.org/about}) to
+retreive a bounding box for the given query. Implemented
+from the \code{ggmap:geocode} function from the \code{ggmap}
+package (\url{https://cran.r-project.org/web/packages/ggmap/index.html})
+by David Kahle to remove dependencies
+of \code{ggmap} that are not necessary for \code{rcanvec}.
+}
+\examples{
+\donttest{
+searchbbox("kings county, NS")
+searchbbox("University Ave. Wolfville NS")
+searchbbox("Wolfville ns")
+}
 }
 
