@@ -265,6 +265,7 @@ nts.bybboxgeneric <-function(bbox, tilefuncx, tilefuncy, idfunc) {
   miny <- max(bbox[2,1], 40.0)
   maxx <- min(bbox[1,2], -48.0)
   maxy <- min(bbox[2,2], 88.0)
+  if((maxx < minx) || (maxy < miny)) stop("Bounds provided may be outside the NTS grid")
   
   containsabove80 <- maxy > 80.0
   containsabove68 <- containsabove80 || (miny >= 68.0) || (maxy>68.0)
@@ -343,7 +344,7 @@ nts.SCALE50K <- 2
 #' @param bbox A bounding box of lat/lon values in the form returned by \code{sp::bbox()}.
 #' @param atscale One of \code{nts.SCALESERIES}, \code{nts.SCALE250K}, or \code{nts.SCALE50K}
 #' @return A \code{list} object containing zero or more NTS References.
-#' @seealso nts
+#' @seealso \link{nts}
 #' 
 #' @export
 nts.bybbox <- function(bbox, atscale) {
@@ -375,7 +376,7 @@ nts.bybbox <- function(bbox, atscale) {
 #' or \code{nts.SCALE50K}
 #' @return A \code{list} of NTS References
 #' 
-#' @seealso nts
+#' @seealso \link{nts}
 #' 
 #' @export
 nts.idat <- function(lat, lon, atscale) {
