@@ -21,6 +21,6 @@ A \code{list} of NTS References
 Get NTS Reference(s) based on location at a given scale.
 }
 \seealso{
-nts
+\link{nts}
 }
 

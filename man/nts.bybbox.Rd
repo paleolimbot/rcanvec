@@ -21,6 +21,6 @@ all have a valid series component (e.g. "021"), but map area (e.g. "H")
 and map sheet (e.g. "01") are not checked to make sure they exist.
 }
 \seealso{
-nts
+\link{nts}
 }
 

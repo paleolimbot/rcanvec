@@ -17,19 +17,19 @@ in creating vector-based maps for locations across Canada.
 Package: \tab rcanvec\cr
 Type: \tab Package\cr
 Version: \tab 0.1.0\cr
-Date: \tab 2015-10-02\cr
+Date: \tab 2015-10-03\cr
 License: \tab GPL-2\cr
 }
-This package provides access to the CanVec/CanVec+ datasets via the \code{canvec.download()}
+This package provides access to the CanVec/CanVec+ datasets via the \link{canvec.download}
 function. CanVec data is organized by National Topographic System number (e.g. 021H01), 
-so the \code{nts()} function is provided to look up NTS number by location (e.g. lat/lon),
-parsed text (e.g. "21h1"), or bounding box. If the \code{ggmap} package is available, 
-searching a bounding box based on location is possible (e.g. \code{searchbbox("wolfville ns")}).
-Using the \code{canvec.qplot()} function, this data can be plotted using default options for
-standard layers. Theoretically, it is possible to make a vector-based map of any location 
-in Canada with one line of code: \code{canvec.qplot(bbox=searchbbox("wolfville ns"))}. For
+so the \link{nts} function is provided to look up NTS number by location (e.g. lat/lon),
+parsed text (e.g. "21h1"), or bounding box. Searching a bounding box using \link{searchbbox} based on human-readable location is provided as a convenience.(e.g. \code{searchbbox("wolfville ns")}). 
+Using the \link{canvec.qplot} function, this data can be plotted using default options for
+standard layers. Combining the \code{searchbbox()} and \link{canvec.qplot} functions, it is possible to make a vector-based map of any location 
+in Canada with one line of code: \code{canvec.qplot(bbox=searchbbox("wolfville ns"))} (data is
+downloaded automatically. For
 prettier maps, the \code{canvec.export()} function exports shapefiles in a human-readable
-format (e.g. 021H01_building.shp instead of 021h01_17_0_BS_2010009_0.shp). If more refined
+format (e.g. 021H01_building.shp). If more refined
 plotting or manipulation is desired, further functions are available to manually load or
 obtain filenames of cached files. Files are downloaded to the working directory by default,
 although this location can be defined using the \code{cachedir} argument available to
@@ -39,7 +39,7 @@ many functions.
 Dewey Dunnington <dewey@fishandwhistle.net>
 }
 \references{
-   \href{http://ftp2.cits.rncan.gc.ca/pub/canvec+/doc/CanVec+_product_specifications.pdf}{CanVec+ Product Specifications}
+   \href{http://ftp2.cits.rncan.gc.ca/pub/canvec+/doc/CanVec+_product_specifications.pdf}{CanVec+ Product Specifications},
    \href{http://www.nrcan.gc.ca/earth-sciences/geography/topographic-information/maps/9763}{National Topographic System (NTS) Documentation} 
 }  
 \keyword{ package }
@@ -58,58 +58,61 @@ nts(bbox=makebbox(45.125, -64.25, 44.875, -64.75))
 #arguments as nts() and returns a string vector instead.
 ntsstring(c("021", "H", "01"))
 ntsstring(bbox=makebbox(45.125, -64.25, 44.875, -64.75))
-
+\donttest{
 #bbox functions make it easy to manipulate bounding boxes
 wolfville <- searchbbox("wolfville ns") #requires {ggmap} to geocode query
 wolfvillezoomedout <- zoom(wolfville, 0.5)
 
-\donttest{
-    #download canvec or canvec+ data. 250k references use canvec+ (large amounts of data)
-    #and 50k references use canvec data (older but distributed in smaller chunks).
-    canvec.download(nts('21h1'))
-    
-    #load data
-    buildings <- canvec.load(nts("21h1"), "building")
-    lakes <- canvec.load(nts("21h1"), "waterbody")
-    rivers <- canvec.load(nts('21h1'), "river")
-    roads <- canvec.load(nts('21h1'), "road")
-    contours <- canvec.load(nts('21h1'), "contour")
-    
-    #plot data
-    plot(lakes, col="lightblue", border="lightblue")
-    plot(rivers, add=TRUE, col="lightblue")
-    plot(buildings, add=TRUE, pch=".")
-    
-    #zoomed in
-    plot(lakes, col="lightblue", border="lightblue", 
-         xlim=c(-64.4,-64.35), ylim=c(45.05,45.1))
-    plot(contours, add=TRUE, col="brown", lwd=0.2)
-    plot(rivers, add=TRUE, col="lightblue")
-    plot(buildings, add=TRUE, pch=".")
-    plot(roads, add=TRUE, lwd=0.5)
+#easy plotting with canvec.qplot()
+canvec.qplot(bbox=searchbbox("wolfville ns"))
+
+#download canvec or canvec+ data. 250k references use canvec+ (large amounts of data)
+#and 50k references use canvec data (older but distributed in smaller chunks).
+canvec.download(nts('21h1'))
+
+#load data
+buildings <- canvec.load(nts("21h1"), "building")
+lakes <- canvec.load(nts("21h1"), "waterbody")
+rivers <- canvec.load(nts('21h1'), "river")
+roads <- canvec.load(nts('21h1'), "road")
+contours <- canvec.load(nts('21h1'), "contour")
+
+#plot data
+plot(lakes, col="lightblue", border="lightblue")
+plot(rivers, add=TRUE, col="lightblue")
+plot(buildings, add=TRUE, pch=".")
+
+#zoomed in
+plot(lakes, col="lightblue", border="lightblue", 
+     xlim=c(-64.4,-64.35), ylim=c(45.05,45.1))
+plot(contours, add=TRUE, col="brown", lwd=0.2)
+plot(rivers, add=TRUE, col="lightblue")
+plot(buildings, add=TRUE, pch=".")
+plot(roads, add=TRUE, lwd=0.5)
 
 
-    #equivalent syntax in canvec.qplot()
-    canvec.qplot(nts("21h1"), layers=c("waterbody", "contour", "river", "building", "road"))
-    canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), 
-                layers=c("waterbody", "contour", "river", "building", "road"))
-    
-    #method returns plot data argument so data does not need to be loaded each time. 
-    #this will not work when changing nts sheets.
-    plotdata <- canvec.qplot(nts("21h1"), layers=c("waterbody", "contour", "river"))
-    plotdata <- canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), 
-                              layers=c("waterbody", "contour", "river"),
-                              data=plotdata)
-    
-    #easy exporting with human readable names
-    canvec.export(nts("21h01"), "~/canvecdata", layerids=c("road", "river"))
-    # ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.dbf to ~/canvecdata/021H01_road.dbf 
-    # ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.prj to ~/canvecdata/021H01_road.prj 
-    # ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.shp to ~/canvecdata/021H01_road.shp 
-    # ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.shx to ~/canvecdata/021H01_road.shx 
-    # ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.dbf to ~/canvecdata/021H01_river.dbf 
-    # ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.prj to ~/canvecdata/021H01_river.prj 
-    # ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.shp to ~/canvecdata/021H01_river.shp 
-    # ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.shx to ~/canvecdata/021H01_river.shx
-  }
+#equivalent syntax in canvec.qplot()
+canvec.qplot(nts("21h1"), layers=c("waterbody", "contour", "river", "building", "road"))
+canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), 
+            layers=c("waterbody", "contour", "river", "building", "road"))
+
+#method returns plot data argument so data does not need to be loaded each time. 
+#this will not work when changing nts sheets.
+plotdata <- canvec.qplot(nts("21h1"), layers=c("waterbody", "contour", "river"))
+plotdata <- canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), 
+                          layers=c("waterbody", "contour", "river"),
+                          data=plotdata)
+
+#easy exporting with human readable names
+canvec.export(nts("21h01"), "~/canvecdata", layerids=c("road", "river"))
+# ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.dbf to ~/canvecdata/021H01_road.dbf 
+# ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.prj to ~/canvecdata/021H01_road.prj 
+# ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.shp to ~/canvecdata/021H01_road.shp 
+# ..../canvec_021h01_shp/021h01_17_0_TR_1760009_1.shx to ~/canvecdata/021H01_road.shx 
+# ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.dbf to ~/canvecdata/021H01_river.dbf 
+# ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.prj to ~/canvecdata/021H01_river.prj 
+# ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.shp to ~/canvecdata/021H01_river.shp 
+# ..../canvec_021h01_shp/021h01_17_0_HD_1470009_1.shx to ~/canvecdata/021H01_river.shx
+}
+
 }

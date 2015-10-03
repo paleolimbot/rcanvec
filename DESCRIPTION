@@ -1,8 +1,8 @@
 Package: rcanvec
 Type: Package
 Title: Access and plot CanVec and CanVec+ data for rapid basemap creation in Canada
-Version: 0.1.1.9000
-Date: 2015-09-26
+Version: 0.1.0
+Date: 2015-10-03
 Authors@R: person("Dewey", "Dunnington", email = "dewey@fishandwhistle.net",
   role = c("aut", "cre"))
 Maintainer: Dewey Dunnington <dewey@fishandwhistle.net>
