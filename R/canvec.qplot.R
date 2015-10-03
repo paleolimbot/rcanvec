@@ -107,7 +107,7 @@ canvec.qplot <- function(ntsid=NULL, bbox=NULL,
       bbox1 = nts.bbox(ntsid)
     }
     coords <- sp::coordinates(t(bbox1))
-    spoints = sp::SpatialPoints(coords, proj4string = CRS("+proj=longlat +ellps=GRS80 +no_defs"))
+    spoints = sp::SpatialPoints(coords, proj4string = sp::CRS("+proj=longlat +ellps=GRS80 +no_defs"))
     
     plotargs <- list(...)
     if(is.null(bbox)) {
