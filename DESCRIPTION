@@ -1,9 +1,9 @@
 Package: rcanvec
 Type: Package
-Title: Access and plot CanVec and CanVec+ data for rapid basemap creation in Canada
+Title: Access and Plot CanVec and CanVec+ Data for Rapid Basemap Creation in Canada
 Version: 0.1.1
-Date: 2015-10-03
-Author:  Dewey Dunnington <dewey@fishandwhistle.net>
+Date: 2015-10-04
+Author: Dewey Dunnington <dewey@fishandwhistle.net>
 Maintainer: Dewey Dunnington <dewey@fishandwhistle.net>
 Description: Provides an interface to the National Topographic System (NTS), which is
  the way in which several a number of freely available Canadian datasets 
@@ -16,3 +16,4 @@ Imports: rjson, digest
 URL: https://github.com/paleolimbot/rcanvec
 BugReports: http://github.com/paleolimbot/rcanvec
 LazyData: true
+Suggests: testthat

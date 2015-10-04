@@ -147,7 +147,7 @@ geocode <- function(location, output = c("latlon", "latlona", "more", "all"),
     url_string <- paste("http://www.datasciencetoolkit.org/maps/api/geocode/json?address=", posturl, sep = "")
   }
   
-  url_string <- URLencode(url_string)
+  url_string <- utils::URLencode(url_string)
   url_hash   <- digest::digest(url_string)
   
   
@@ -332,35 +332,6 @@ checkGeocodeQueryLimit <- function(url_hash, elems, override, messaging, userTyp
   
   invisible("go")
 }
-
-
-geocodeQueryCheck <- function(userType = "free"){
-  
-  .GoogleGeocodeQueryCount <- NULL; rm(.GoogleGeocodeQueryCount);
-  
-  stopifnot(userType %in% c("free", "business"))
-  limit <- c("free" = 2500, "business" = 1E5)[userType]
-  
-  if(exists(".GoogleGeocodeQueryCount", .GlobalEnv)){
-    
-    remaining <- limit - sum(
-      subset(.GoogleGeocodeQueryCount, time >= Sys.time() - 24*60*60)$elements
-    )
-    message(remaining, " geocoding queries remaining.")
-    
-  } else {
-    
-    remaining <- limit
-    message(remaining, " geocoding queries remaining.")
-    
-  }
-  
-  invisible(remaining)
-}
-
-
-
-
 
 geoInfoDoesntExist <- function(){
   !(".GeocodedInformation" %in% ls(envir = .GlobalEnv, all.names =  TRUE))

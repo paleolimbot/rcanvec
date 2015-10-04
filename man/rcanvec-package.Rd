@@ -92,7 +92,7 @@ plot(roads, add=TRUE, lwd=0.5)
 
 
 #equivalent syntax in canvec.qplot()
-canvec.qplot(nts("21h1"), layers=c("waterbody", "contour", "river", "building", "road"))
+canvec.qplot(nts("21h1"), layers=c("waterbody", "contour", "river", "road"))
 canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), 
             layers=c("waterbody", "contour", "river", "building", "road"))
 

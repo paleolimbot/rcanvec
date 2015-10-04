@@ -21,7 +21,7 @@ makebbox <- function(n, e, s, w) {
 #' Use the Data Science Toolkit (\url{http://www.datasciencetoolkit.org/about}) to 
 #' retreive a bounding box for the given query. Implemented
 #' from the \code{ggmap:geocode} function from the \code{ggmap}
-#' package (\url{https://cran.r-project.org/web/packages/ggmap/index.html}) 
+#' package (\url{https://cran.r-project.org/package=ggmap}) 
 #' by David Kahle to remove dependencies
 #' of \code{ggmap} that are not necessary for \code{rcanvec}.
 #' 

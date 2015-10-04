@@ -1,4 +1,4 @@
-#functions involving canvec
+ #functions involving canvec
 
 #' Get Cache Directory
 #' 
@@ -19,7 +19,8 @@ canvec.cachedir <- function() {
 # Functions to get file names --------
 
 canvec.layers <- function(...) {
-  data(canvec_layers, envir=environment())
+  canvec_layers <- NULL #hack because data(canvec_layers) will load to variable
+  utils::data(canvec_layers, envir=environment())
   layerids <- list(...)
   filt <- match(layerids, canvec_layers$id)
   if(any(is.na(filt))) {
@@ -110,7 +111,7 @@ canvec.download <- function(..., forcedownload=FALSE, forceextract=FALSE, extrac
       #download
       uri <- canvec.url(ntsid)
       cat("Downloading sheet", paste(ntsid,collapse=""), "from", uri, "\n")
-      tryCatch(download.file(uri, zippath),
+      tryCatch(utils::download.file(uri, zippath),
                error=function(err) {
                  skipextract<<-TRUE
                  unlink(zippath)
@@ -121,7 +122,7 @@ canvec.download <- function(..., forcedownload=FALSE, forceextract=FALSE, extrac
     }
     if((!file.exists(folderpath) || forceextract || forcedownload) && !skipextract && extract) {
       cat("Extracting to", folderpath, "\n")
-      unzip(zipfile=zippath, exdir=folderpath, overwrite=TRUE)
+      utils::unzip(zipfile=zippath, exdir=folderpath, overwrite=TRUE)
     } else {
       cat("Skipping extraction", "\n")
     }
@@ -251,7 +252,8 @@ canvec.export <- function(ntsid, tofolder, layerids=NULL, cachedir=NULL) {
     cachedir <- canvec.cachedir()
   }
   if(is.null(layerids)) {
-    data(canvec_layers, envir=environment())
+    canvec_layers <- NULL #hack because data(canvec_layers) will load to variable
+    utils::data(canvec_layers, envir=environment())
     layerids <- canvec_layers$id
   }
   
@@ -370,13 +372,13 @@ canvec.plot <- function(loaded, options=NULL, add=NULL) {
       options$add <- TRUE
     }
     options$add <- add
-    do.call(plot, options)
+    do.call(sp::plot, options)
     added=TRUE
   }
 }
 
 .makecol <- function(r, g, b, alpha=1) {
-  rgb(r, g, b, alpha*255, maxColorValue=255)
+  grDevices::rgb(r, g, b, alpha*255, maxColorValue=255)
 }
 
 #' Get Default Options For Plotting Layers
