@@ -1,6 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^rcanvec\.cache/$
+^rcanvec\.cache$
 ^demo\.R$
 ^data-raw$
-^\.git/$
+^\.git$
