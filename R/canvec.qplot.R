@@ -116,7 +116,7 @@ canvec.qplot <- function(ntsid=NULL, bbox=NULL,
       if(is.null(plotargs$ylim))
         ylim <- bbox1[2,]
     }
-    plot(spoints, pch=".", xlim=xlim, ylim=ylim, ...)
+    sp::plot(spoints, pch=".", xlim=xlim, ylim=ylim, ...)
     
     #plot data
     for(layerid in layers) {

@@ -17,7 +17,7 @@ in creating vector-based maps for locations across Canada.
 Package: \tab rcanvec\cr
 Type: \tab Package\cr
 Version: \tab 0.1.1\cr
-Date: \tab 2015-10-03\cr
+Date: \tab 2015-10-04\cr
 License: \tab GPL-2\cr
 }
 This package provides access to the CanVec/CanVec+ datasets via the \link{canvec.download}

@@ -11,8 +11,8 @@ Description: Provides an interface to the National Topographic System (NTS), whi
  to create Canadian topographic maps, are two such items that are useful
  in creating vector-based maps for locations across Canada.
 License: GPL-2
-Depends: R (>= 2.10), rgdal, sp
-Imports: rjson, digest
+Depends: R (>= 2.10)
+Imports: rjson, digest, rgdal, sp
 URL: https://github.com/paleolimbot/rcanvec
 BugReports: http://github.com/paleolimbot/rcanvec
 LazyData: true

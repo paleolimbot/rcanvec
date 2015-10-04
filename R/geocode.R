@@ -280,7 +280,7 @@ geocode <- function(location, output = c("latlon", "latlona", "more", "all"),
 
 
 checkGeocodeQueryLimit <- function(url_hash, elems, override, messaging, userType){
-  
+  time <- 0 #hack to addres CRAN checks that say time was not properly defined
   .GoogleGeocodeQueryCount <- NULL; rm(.GoogleGeocodeQueryCount); # R CMD check trick
   
   stopifnot(userType %in% c("free", "business"))
