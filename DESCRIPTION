@@ -13,8 +13,8 @@ Description: Provides an interface to the National Topographic System (NTS), whi
  CanVec data by location, plots it using pretty defaults, and exports it to
  human-readable shapefiles for use in another GIS.
 License: GPL-2
-Depends: R (>= 2.10), sp
-Imports: rjson, digest, rgdal
+Depends: R (>= 2.10)
+Imports: rjson, sp, digest, rgdal
 URL: https://github.com/paleolimbot/rcanvec
 BugReports: http://github.com/paleolimbot/rcanvec
 LazyData: true

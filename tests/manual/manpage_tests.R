@@ -20,17 +20,17 @@ test_that("No errors on manpage examples", {
   contours <- canvec.load(nts('21h1'), "contour")
   
   #plot data
-  plot(lakes, col="lightblue", border="lightblue")
-  plot(rivers, add=TRUE, col="lightblue")
-  plot(buildings, add=TRUE, pch=".")
+  sp::plot(lakes, col="lightblue", border="lightblue")
+  sp::plot(rivers, add=TRUE, col="lightblue")
+  sp::plot(buildings, add=TRUE, pch=".")
   
   #zoomed in
-  plot(lakes, col="lightblue", border="lightblue", 
+  sp::plot(lakes, col="lightblue", border="lightblue", 
        xlim=c(-64.4,-64.35), ylim=c(45.05,45.1))
-  plot(contours, add=TRUE, col="brown", lwd=0.2)
-  plot(rivers, add=TRUE, col="lightblue")
-  plot(buildings, add=TRUE, pch=".")
-  plot(roads, add=TRUE, lwd=0.5)
+  sp::plot(contours, add=TRUE, col="brown", lwd=0.2)
+  sp::plot(rivers, add=TRUE, col="lightblue")
+  sp::plot(buildings, add=TRUE, pch=".")
+  sp::plot(roads, add=TRUE, lwd=0.5)
   
   
   #equivalent syntax in canvec.qplot()
