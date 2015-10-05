@@ -139,6 +139,8 @@ nts <- function(..., lat=NULL, lon=NULL, bbox=NULL, atscale=nts.SCALE50K) {
       }
     }
     
+  } else {
+    stop("No arguments passed to nts()")
   }
   
   if(length(out)==1) {

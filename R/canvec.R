@@ -19,9 +19,12 @@ canvec.cachedir <- function() {
 # Functions to get file names --------
 
 canvec.layers <- function(...) {
+  layerids <- list(...)
+  if(length(layerids)==0) stop("No arguments passed to canvec.layers()")
+  
   canvec_layers <- NULL #hack because data(canvec_layers) will load to variable
   utils::data(canvec_layers, envir=environment())
-  layerids <- list(...)
+  
   filt <- match(layerids, canvec_layers$id)
   if(any(is.na(filt))) {
     stop("Could not find layer(s): ", paste(layerids[is.na(filt)], collapse=", "))
@@ -98,6 +101,8 @@ canvec.download <- function(..., forcedownload=FALSE, forceextract=FALSE, extrac
   }
   
   ntsids <- list(...)
+  if(length(ntsids)==0) stop("No arguments passed to canvec.download()")
+  
   if(length(ntsids)==1 && class(ntsids[[1]])=="list") {
     ntsids <- ntsids[[1]]
   }
