@@ -75,6 +75,13 @@ canvec.qplot <- function(ntsid=NULL, bbox=NULL,
   
   if(class(ntsid) != "list") {
     ntsid <- list(ntsid)
+    #check to make sure arguments passed are indeed NTS refs
+    for(singleid in ntsid) {
+      if((class(singleid) != "character") || 
+         (length(singleid)<2) || 
+         (length(singleid)>3)) stop("One or more arguments specified was not an NTS reference: ",
+                                    singleid, ". Did you mean bbox=... or nts(...) instead?")
+    }
   }
   
   if(is.null(data)) {
