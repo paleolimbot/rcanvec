@@ -1,3 +1,5 @@
+library(testthat)
+
 context("Test rcanvec-package examples that take too long to check")
 
 test_that("No errors on manpage examples", {
