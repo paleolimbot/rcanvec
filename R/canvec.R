@@ -16,14 +16,16 @@ canvec.cachedir <- function() {
   dirname
 }
 
+
+# Load canvec_layers into package namespace
+#canvec_layers <- NULL #hack because data(canvec_layers) will load to variable
+utils::data(canvec_layers, envir=environment())
+
 # Functions to get file names --------
 
 canvec.layers <- function(...) {
   layerids <- list(...)
   if(length(layerids)==0) stop("No arguments passed to canvec.layers()")
-  
-  canvec_layers <- NULL #hack because data(canvec_layers) will load to variable
-  utils::data(canvec_layers, envir=environment())
   
   filt <- match(layerids, canvec_layers$id)
   if(any(is.na(filt))) {
@@ -267,8 +269,6 @@ canvec.export <- function(ntsid, tofolder, layers=NULL, crs=NULL, cachedir=NULL,
     cachedir <- canvec.cachedir()
   }
   if(is.null(layers)) {
-    canvec_layers <- NULL #hack because data(canvec_layers) will load to variable
-    utils::data(canvec_layers, envir=environment())
     layers <- canvec_layers$id
   }
   
@@ -488,6 +488,8 @@ canvec.defaultoptions <- function(layerid) {
     return(list(col="black", lwd=0.5))
   } else if(layerid=="forest") {
     return(list(col=.makecol(208, 234, 221), border=.makecol(208, 234, 221)))
+  } else if(layerid=="building_poly") {
+    return(list(col="black", border="black"))
   } else {
     return(list())
   }
