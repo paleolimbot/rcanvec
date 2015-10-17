@@ -31,7 +31,7 @@ or pass \code{driver} to convert file format.
 }
 \examples{
 \donttest{
-download(nts("21h01"))
+canvec.download(nts("21h01"))
 canvec.export(nts("21h01"), "exporteddata", layers=c("road", "river"))
 canvec.export(nts("21h01"), "exporteddataUTM", layers=c("road", "river"),
                  crs=sp::CRS("+init=epsg:26920"))

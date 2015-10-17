@@ -114,6 +114,8 @@
 #' nts('21h1', '21a16', '021A15')
 #' nts(lat=45.2, lon=-64.32)
 #' nts(lat=c(45.2, 46.2), lon=c(-64.32, -64.81))
+#' 
+#' library(prettymapr)
 #' nts(bbox=makebbox(45.125, -64.25, 44.875, -64.75))
 #' 
 #' @export
@@ -164,6 +166,8 @@ nts <- function(..., lat=NULL, lon=NULL, bbox=NULL, atscale=nts.SCALE50K) {
 #' @return a character vector of NTS reference strings in the form "021H01".
 #' @examples
 #' ntsstring(c("021", "H", "01"))
+#' 
+#' library(prettymapr)
 #' ntsstring(bbox=makebbox(45.125, -64.25, 44.875, -64.75))
 #' 
 #' @export

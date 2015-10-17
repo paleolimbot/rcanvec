@@ -2,11 +2,6 @@
 
 context("Tests of NTS functions")
 
-#variant ntsstring() converts nts to string formats or takes the same
-#arguments as nts() and returns a string vector instead.
-ntsstring(c("021", "H", "01"))
-ntsstring(bbox=makebbox(45.125, -64.25, 44.875, -64.75))
-
 test_that("the nts() function retruns in the proper format", {
   ref <- nts('21h')
   ref2 <- nts('21h1')
@@ -29,6 +24,7 @@ test_that("lat/lon locations locate the correct sheet", {
 })
 
 test_that("bounding boxes return correct sheets", {
+  library(prettymapr)
   sheets <- nts(bbox=makebbox(45.125, -64.25, 44.875, -64.75))
   expect_equal(sheets, nts("021A15", "021H02", "021A16", "021H01"))
 })
