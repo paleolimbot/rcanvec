@@ -1,7 +1,7 @@
 Package: rcanvec
 Type: Package
 Title: Access and Plot CanVec and CanVec+ Data for Rapid Basemap Creation in Canada
-Version: 0.1.3
+Version: 0.1.4
 Date: 2015-10-17
 Author: Dewey Dunnington <dewey@fishandwhistle.net>
 Maintainer: Dewey Dunnington <dewey@fishandwhistle.net>
