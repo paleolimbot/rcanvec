@@ -25,18 +25,23 @@
 #' @param atscale One of \code{nts.SCALE50K} (CanVec data) or \code{nts.SCALE250K} (CanVec+ data)
 #' @param stoponlargerequest Stop if a large (greater than 4 tiles) area is requested. Defaults to
 #' \code{TRUE}.
-#' @param ... A list of graphical parameters passed to the inital call to \code{plot()}.
+#' @param epsg The epsg code in which to plot the data, or \code{NULL} for automatic. Use
+#' \code{epsg=3857} to layer on Open Street Map tiles, or \code{epsg=269XX} (where \code{XX}
+#' is the UTM Zone) for a UTM projection. Defaults to no projection, although \code{sp::plot}
+#' adjusts the aspect such that the default does not appear distorted.
+#' @param ... A list of graphical parameters passed to the inital call to \code{plot()}. Use
+#' \code{add=TRUE} to layer on an existing plot.
 #' @return A list object that contains the Spatial* data that was plotted
 #' 
 #' @examples
 #' \donttest{
-#'  #simplest use using searchbbox()
-#'  canvec.qplot(bbox=searchbbox("Wolfville NS"))
-#'  canvec.qplot(bbox=searchbbox("Wolfville NS"), layers=c("waterbody", "forest"))
-#'  
-#'  #be careful with large areas and lots of layers
-#'  canvec.qplot(bbox=searchbbox("Toronto, ON")) #will take ~10 minutes to plot
+#'  #simplest use using searchbbox() from {prettymapr}
+#'  library(prettymapr)
+#'  wolfville <- searchbbox("Wolfville NS", source="google")
+#'  canvec.qplot(bbox=wolfville)
+#'  canvec.qplot(bbox=wolfville, layers=c("waterbody", "forest"))
 #' 
+#'  #can also plot by NTS sheet and use bbox= or xlim, ylim to zoom.
 #'  canvec.qplot(nts("21h1"), layers=c("waterbody", "forest", "contour", "river", "road"))
 #'  canvec.qplot(bbox=makebbox(45.1, -64.35, 45.05, -64.4), 
 #'         layers=c("waterbody", "contour", "river", "building", "road"))
@@ -54,7 +59,14 @@
 canvec.qplot <- function(ntsid=NULL, bbox=NULL, 
                           layers=c("waterbody", "forest", "contour", "river", "road"), 
                           options=NULL, data=NULL, cachedir=NULL, plotdata=TRUE, atscale=nts.SCALE50K, 
-                          stoponlargerequest=TRUE, ...) {
+                          stoponlargerequest=TRUE, epsg=NULL, ...) {
+  
+  if(!is.null(epsg)) {
+    crs <- sp::CRS(paste0("+init=epsg:", epsg))
+  } else {
+    crs <- NULL
+  }
+  
   if(!is.null(bbox)) {
     if(is.null(ntsid)) {
       ntsid <- nts(bbox=bbox, atscale = atscale)
@@ -62,6 +74,13 @@ canvec.qplot <- function(ntsid=NULL, bbox=NULL,
         stop("Current requrest requires loading of ", length(ntsid),
              " mapsheets. This may download a large amount of data and/or take a",
              " very long time to load. Rerun with stoponlargerequest=FALSE to continue.")
+    }
+    if(!is.null(crs)) {
+      #transform bbox
+      coords <- sp::coordinates(
+        sp::spTransform(
+          sp::SpatialPoints(sp::coordinates(t(bbox)), sp::CRS("+init=epsg:4326")), crs))
+      bbox <- t(coords)
     }
     xlim <- bbox[1,]
     ylim <- bbox[2,]
@@ -113,8 +132,17 @@ canvec.qplot <- function(ntsid=NULL, bbox=NULL,
     } else {
       bbox1 = nts.bbox(ntsid)
     }
-    coords <- sp::coordinates(t(bbox1))
-    spoints = sp::SpatialPoints(coords, proj4string = sp::CRS("+proj=longlat +ellps=GRS80 +no_defs"))
+    
+    if(!is.null(crs)) {
+      coords <- sp::coordinates(t(bbox1))
+      spoints <- sp::SpatialPoints(coords, proj4string = sp::CRS("+proj=longlat +ellps=GRS80 +no_defs"))
+      spoints <- sp::spTransform(spoints, crs)
+      coords <- sp::coordinates(spoints)
+      bbox1 <- t(coords)
+    } else {
+      coords <- sp::coordinates(t(bbox1))
+      spoints <- sp::SpatialPoints(coords, proj4string = sp::CRS("+proj=longlat +ellps=GRS80 +no_defs"))
+    }
     
     plotargs <- list(...)
     if(is.null(bbox)) {
@@ -123,6 +151,7 @@ canvec.qplot <- function(ntsid=NULL, bbox=NULL,
       if(is.null(plotargs$ylim))
         ylim <- bbox1[2,]
     }
+    
     sp::plot(spoints, pch=".", xlim=xlim, ylim=ylim, ...)
     
     #plot data
@@ -130,7 +159,7 @@ canvec.qplot <- function(ntsid=NULL, bbox=NULL,
       layeropts <- options[[layerid]]
       if(is.null(layeropts))
         layeropts <- canvec.defaultoptions(layerid)
-      canvec.plot(data[[layerid]], layeropts, add=TRUE)
+      canvec.plot(data[[layerid]], layeropts, crs=crs, add=TRUE)
     }
     
   }
