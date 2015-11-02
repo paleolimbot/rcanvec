@@ -1,5 +1,6 @@
-# RCANVEC TUTORIAL
+# Tutorial: {rcanvec}, {rosm} and {prettymapr}
 
+```
 # ==== A review of baseplot: plot(), text(), points(), lines(), polygon(), arrows(), locator() ====
 
 #setup data
@@ -146,4 +147,4 @@ prettymap(bmaps.plot(altalake))
 pdf()
 prettymap(bmaps.plot(altalake))
 dev.off()
-
+```

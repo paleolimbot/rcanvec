@@ -5,7 +5,7 @@
 #setup data
 xs <- c(-64.35134, -64.36888, -64.35984)
 ys <- c(45.06345, 45.08933, 45.09176)
-mylabels <- c("My house", "Huggins", "TAN")
+mylabels <- c("Graveyard", "Huggins", "TAN")
 
 #plot x and y points (try pch=XX, cex=XX, xlim=c(X, X), and ylim=c(X, X))
 
