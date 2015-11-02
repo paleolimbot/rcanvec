@@ -64,6 +64,8 @@ As advertized, creates a polygon based on the verticies provided. Try `border` t
 polygon(xs, ys, col="green", border="red")
 ```
 
+![output](images/Rplot001.png)
+
 ###locator()
 Often it's desirable to place something on the plot that you don't necessarily know the coordinates to. To find these coordinates, we can capture mouse clicks on a plot using the `locator()` function. This will return a `data.frame` of XY coordinates of the points we clicked on. Remember to hit **ESC** when done!
 ```
@@ -159,7 +161,7 @@ library(rosm)
 #Find bounding box
 altalake <- makebbox(50.1232, -122.9574, 50.1035, -123.0042)
 #Plot Bing Maps Aerial
-bmaps.plot(altalake, res=300, project=FALSE)
+bmaps.plot(altalake, res=300, project=FALSE, stoponlargerequest=FALSE)
 #Plot overlays
 points(altacores$lon, altacores$lat, pch=15, cex=0.6)
 text(altacores$lon, altacores$lat, labels=altacores$name, adj=c(-0.2, 0.5), cex=0.5)
@@ -171,7 +173,7 @@ library(prettymapr)
 library(rosm)
 
 altalake <- makebbox(50.1232, -122.9574, 50.1035, -123.0042)
-prettymap({bmaps.plot(altalake, res=300)
+prettymap({bmaps.plot(altalake, res=300, project=FALSE, stoponlargerequest=FALSE)
            points(altacores$lon, altacores$lat, pch=15, cex=0.6)
            text(altacores$lon, altacores$lat, labels=altacores$name, adj=c(-0.2, 0.5), cex=0.5)})
 ```
@@ -217,9 +219,9 @@ Using the graphic parameters such as `col` and `border`, we can plot our data ma
 ```
 library(sp) #needed to load sp::plot
 
-plot(waterbody, col="lightblue", border=0, xlim=altalake[1,], ylim=altalake[2,])
-plot(forest, col="#D0EADD", border=0, add=TRUE)
-plot(rivers, col="lightblue", add=TRUE)
+plot(waterbody[[2]], col="lightblue", border=0, xlim=altalake[1,], ylim=altalake[2,])
+plot(forest[[2]], col="#D0EADD", border=0, add=TRUE)
+plot(rivers[[2]], col="lightblue", add=TRUE)
 ```
 If you'd still like to use the `canvec.qplot()` function, it's also possible to build this customization as a "list of lists", best shown by example:
 ```
@@ -239,7 +241,6 @@ text(altacores$lon, altacores$lat, labels=altacores$name, adj=c(-0.2, 0.5), cex=
 ```
 A neat trick is to use the {rosm} package to add a hillshade on top of our map, which we would normally do before plotting our overlays. We'll have to tell `osm.plot()` not to project its data, since we're already in lat/lon.
 ```
-canvec.qplot(bbox=altalake)
 osm.plot(altalake, type="hillshade", project=FALSE, add=TRUE)
 ```
 
