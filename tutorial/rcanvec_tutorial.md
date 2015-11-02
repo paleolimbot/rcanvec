@@ -159,7 +159,7 @@ library(rosm)
 #Find bounding box
 altalake <- makebbox(50.1232, -122.9574, 50.1035, -123.0042)
 #Plot Bing Maps Aerial
-bmaps.plot(altalake, res=300)
+bmaps.plot(altalake, res=300, project=FALSE)
 #Plot overlays
 points(altacores$lon, altacores$lat, pch=15, cex=0.6)
 text(altacores$lon, altacores$lat, labels=altacores$name, adj=c(-0.2, 0.5), cex=0.5)
