@@ -94,6 +94,8 @@ Once we've loaded the data, we can plot it. Use the graphical parameters such as
 #plot data
 plot(altashoreline, col="lightblue")
 ```
+![output](images/Rplot002.png)
+
 Now that we've plotted our base data, we can draw on top of it using `lines()`, `polygon()`, `arrows()`, and `text()`. As an example, we'll load a file containing the locations of my masters thesis sample locations.
 ```
 #plot Alta Lake and cores
@@ -101,6 +103,7 @@ altacores <- read.delim("data/alta_cores.txt")
 points(altacores$lon, altacores$lat, pch=15, cex=0.6)
 text(altacores$lon, altacores$lat, labels=altacores$name, adj=c(-0.2, 0.5), cex=0.5)
 ```
+![output](images/Rplot003.png)
 
 ##Using {rosm} to plot basemaps
 
@@ -121,6 +124,8 @@ Make sure you've got your bounding box right by trying `osm.plot()` or `bmaps.pl
 osm.plot(altalake)
 bmaps.plot(altalake)
 ```
+![output](images/Rplot004.png)
+![output](images/Rplot005.png)
 
 ###Step 2: Choose your map type and zoom level
 {rosm} provides access to a number of map types (and even the ability to load your own if you're savvy!), but the most common ones you'll use are `type=osm`, `type="hillshade"`, `type=stamenwatercolor`, and `type=stamenbw` for `osm.plot()` and `type="Aerial"` with `bmaps.plot()`. Look at all of them with `osm.types()` and `bmaps.types()`.
@@ -130,8 +135,10 @@ osm.plot(altalake, type="stamenbw")
 
 bmaps.types()
 bmaps.plot(altalake, type="AerialWithLabels")
-
 ```
+![output](images/Rplot006.png)
+![output](images/Rplot007.png)
+
 The next thing we'll adjust is the zoom level. The zoom level (level of detail) is calculated automatically, but it may be that you're looking for higher (or lower) resolution. To specify a resolution specifically, use `res=300` (where 300 is the resolution in dpi; useful when exporting figures), or `zoomin=1`, which will use the automatically specified zoom level and zoom in 1 more.
 ```
 bmaps.plot(altalake, zoomin=1)
@@ -150,6 +157,7 @@ Now we can add our overlays.
 points(altacores$lon, altacores$lat, pch=15, cex=0.6)
 text(altacores$lon, altacores$lat, labels=altacores$name, adj=c(-0.2, 0.5), cex=0.5)
 ```
+![output](images/Rplot009.png)
 
 ###Step 5: Putting it all together
 Putting it all together, an example plotting script might like this:
@@ -166,6 +174,8 @@ bmaps.plot(altalake, res=300, project=FALSE, stoponlargerequest=FALSE)
 points(altacores$lon, altacores$lat, pch=15, cex=0.6)
 text(altacores$lon, altacores$lat, labels=altacores$name, adj=c(-0.2, 0.5), cex=0.5)
 ```
+![output](images/Rplot010.png)
+
 You'll notice that it still doesn't have a scale bar or north arrow, and the margins aren't exactly how we'd like them. It's possible to eliminate margins manually using `par(mar=c(0,0,0,0), oma=c(0,0,0,0))`, and add a scale bar using the `addscalebar()` function (in the {prettymapr} package), but the easiest way is to use the `prettymap()` function in {prettymapr} to do it all in one step. This might look like the following:
 
 ```
@@ -177,6 +187,8 @@ prettymap({bmaps.plot(altalake, res=300, project=FALSE, stoponlargerequest=FALSE
            points(altacores$lon, altacores$lat, pch=15, cex=0.6)
            text(altacores$lon, altacores$lat, labels=altacores$name, adj=c(-0.2, 0.5), cex=0.5)})
 ```
+![output](images/Rplot011.png)
+
 There's tons of options for `prettymap()` that let you customize the north arrow, scale bar etc., which you can find in the [{prettymapr} manual](https://github.com/paleolimbot/prettymapr/files/11433/prettymapr_0.1.1-manual.pdf).
 
 ##Using {rcanvec} plot basemaps
@@ -207,6 +219,8 @@ If you run this command and your bounding box returns more than 4 mapsheets, you
 canvec.qplot(bbox=altalake)
 canvec.qplot(bbox=altalake, layers=c("waterbody", "river"))
 ```
+![output](images/Rplot012.png)
+![output](images/Rplot013.png)
 
 ###Step 3: Refine your plotting options (optional)
 It's possible (but not at all necessary) to load layers individually and plot them manually, giving us more control over the appearance of the map. You'll have to have called `canvec.qplot(bbox=XX)` or `canvec.download(nts(bbox=XX))` before you can load a layer.
@@ -215,7 +229,7 @@ waterbody <- canvec.load(nts(bbox=altalake), layerid="waterbody")
 rivers <- canvec.load(nts(bbox=altalake), layerid="river")
 forest <- canvec.load(nts(bbox=altalake), layerid="forest")
 ```
-Using the graphic parameters such as `col` and `border`, we can plot our data manually. Note you'll have to use `xlim` and `ylim` arguments to zoom in. Also, for all calls to `plot()` after the first one, you'll have to pass `add=TRUE` or it will create a new plot.
+Using the graphic parameters such as `col` and `border`, we can plot our data manually. Note you'll have to use `xlim` and `ylim` arguments to zoom in. Also, for all calls to `plot()` after the first one, you'll have to pass `add=TRUE` or it will create a new plot. Because we're dealing with 2 mapsheets, canvec.load() returns a list of layers, and if you don't understand that you should pobably stick to using canvec.qplot().
 ```
 library(sp) #needed to load sp::plot
 
@@ -223,6 +237,8 @@ plot(waterbody[[2]], col="lightblue", border=0, xlim=altalake[1,], ylim=altalake
 plot(forest[[2]], col="#D0EADD", border=0, add=TRUE)
 plot(rivers[[2]], col="lightblue", add=TRUE)
 ```
+![output](images/Rplot014.png)
+
 If you'd still like to use the `canvec.qplot()` function, it's also possible to build this customization as a "list of lists", best shown by example:
 ```
 plotoptions = list()
@@ -232,6 +248,7 @@ plotoptions$river <- list(col="lightblue")
 
 canvec.qplot(bbox=altalake, layers=c("waterbody", "forest", "river"), options=plotoptions)
 ```
+![output](images/Rplot014.png)
 
 ###Step 4: Add overlays
 Next we'll use the `lines()`, `polygon()`, `arrows()`, and `text()` functions we went over earlier to draw on top of the map we've just plotted. Unlike {rosm}, {rcanvec} plots in lat/lon natively, so we don't have to worry about projections.
@@ -239,10 +256,13 @@ Next we'll use the `lines()`, `polygon()`, `arrows()`, and `text()` functions we
 points(altacores$lon, altacores$lat, pch=15, cex=0.6)
 text(altacores$lon, altacores$lat, labels=altacores$name, adj=c(-0.2, 0.5), cex=0.5)
 ```
+![output](images/Rplot015.png)
+
 A neat trick is to use the {rosm} package to add a hillshade on top of our map, which we would normally do before plotting our overlays. We'll have to tell `osm.plot()` not to project its data, since we're already in lat/lon.
 ```
 osm.plot(altalake, type="hillshade", project=FALSE, add=TRUE)
 ```
+![output](images/Rplot016.png)
 
 ###Step 5: Putting it all together
 Putting it all together, an example plotting script might like this:
@@ -261,6 +281,8 @@ osm.plot(altalake, type="hillshade", project=FALSE, add=TRUE)
 points(altacores$lon, altacores$lat, pch=15, cex=0.6)
 text(altacores$lon, altacores$lat, labels=altacores$name, adj=c(-0.2, 0.5), cex=0.5)
 ```
+![output](images/Rplot017.png)
+
 You'll notice that it still doesn't have a scale bar or north arrow, and the margins aren't exactly how we'd like them. It's possible to eliminate margins manually using `par(mar=c(0,0,0,0), oma=c(0,0,0,0))`, and add a scale bar using the `addscalebar()` function (in the {prettymapr} package), but the easiest way is to use the `prettymap()` function in {prettymapr} to do it all in one step. This might look like the following:
 
 ```
@@ -274,4 +296,6 @@ prettymap({canvec.qplot(bbox=altalake, layers=c("waterbody", "forest", "river", 
             points(altacores$lon, altacores$lat, pch=15, cex=0.6)
             text(altacores$lon, altacores$lat, labels=altacores$name, adj=c(-0.2, 0.5), cex=0.5)})
 ```
+![output](images/Rplot018.png)
+
 There's tons of options for `prettymap()` that let you customize the north arrow, scale bar etc., which you can find in the [{prettymapr} manual](https://github.com/paleolimbot/prettymapr/files/11433/prettymapr_0.1.1-manual.pdf).
