@@ -19,5 +19,7 @@ canvec.qplot(bbox=searchbbox("wolfville ns", source="google"))
 #or use {prettymapr} to make it look nice
 prettymap(canvec.qplot(bbox=searchbbox("wolfville ns", source="google")))
 ```
+![example](https://cloud.githubusercontent.com/assets/10995762/10892282/e17317c6-8178-11e5-8c9d-b7136796bb66.png)
+
 
 See the [PDF Manual](https://github.com/paleolimbot/rcanvec/files/15517/rcanvec_0.1.3-manual.pdf) for more details, or see the [tutorial](https://github.com/paleolimbot/rcanvec/blob/master/tutorial/rcanvec_tutorial.md).
