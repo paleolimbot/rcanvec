@@ -1,6 +1,6 @@
 # Basemaps, eh?: A guide to creating Canadian basemaps using {rcanvec}, {rosm} and {prettymapr}
 
-The R packages {rcanvec}, {rosm} and {prettymapr} are all about creating simple, easy-to-read maps without spending too much time finding data to use as a basemap. If you're writing a thesis, think about it as Figure 1 (where in the world is your study site) and Figure 2 (here's my study site). This tutorial is designed as a primer to highlight the basic functions of these three packages - for more detailed information see the PDF manuals for [rcanvec](https://github.com/paleolimbot/rcanvec/files/15517/rcanvec_0.1.3-manual.pdf), [rosm](https://github.com/paleolimbot/rosm/files/16812/rosm_0.1.2-manual.pdf), and [prettymapr](https://github.com/paleolimbot/prettymapr/files/11433/prettymapr_0.1.1-manual.pdf). Feel free to follow along using [tutorial.R](https://github.com/paleolimbot/rcanvec/blob/master/tutorial/tutorial.R) or [tutorial_answers.R](https://github.com/paleolimbot/rcanvec/blob/master/tutorial/tutorial.R). Also, consider supporting R package development by [giving me money](http://apps.fishandwhistle.net/donate) (I'm a starving grad student, I promise).
+The R packages {rcanvec}, {rosm} and {prettymapr} are all about creating simple, easy-to-read maps without spending too much time finding data to use as a basemap. If you're writing a thesis, think about it as Figure 1 (where in the world is your study site) and Figure 2 (here's my study site). This tutorial is designed as a primer to highlight the basic functions of these three packages - for more detailed information see the PDF manuals for [rcanvec](https://github.com/paleolimbot/rcanvec/files/15517/rcanvec_0.1.3-manual.pdf), [rosm](https://github.com/paleolimbot/rosm/files/16812/rosm_0.1.2-manual.pdf), and [prettymapr](https://github.com/paleolimbot/prettymapr/files/11433/prettymapr_0.1.1-manual.pdf). Feel free to follow along using [tutorial.R](tutorial.R) or [tutorial_answers.R](tutorial_answers.R). Also, consider supporting R package development by [giving me money](http://apps.fishandwhistle.net/donate) (I'm a starving grad student, I promise).
 
 ##Install the packages
 See if you can install the packages - they're on CRAN and should be available for most verions of R. Updating R is a pain, but it may be what you have to do to make sure you can install the packages.
@@ -9,6 +9,7 @@ install.packages("prettymapr")
 install.packages("rosm")
 install.packages("rcanvec")
 ```
+Later on you'll also need some data, which you can find in the [tutorial notes](rcanvec_tutorial.zip).
 
 ##Base plotting
 
@@ -78,7 +79,7 @@ It's also possible to capture this to a variable, but you'll eventually want to 
 There are numerous graphical parameters you can pass to these functions, which are documented in great detail at [Quick-R](http://www.statmethods.net/advgraphs/parameters.html) and in the [R man page for par](https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/par.html). The same parameters will be used when you plot spatial data, so it's worth becoming familiar with how to make points, lines, and polygons the way you'd like them to look.
 
 ##Plotting Spatial Data
-The {rgdal} and {sp} packages provide a powerful engine to render all kinds of geographical data. The data used in this section can be found in the [data](https://github.com/paleolimbot/rcanvec/tree/master/tutorial/data) folder. First, we'll have to load the packages.
+The {rgdal} and {sp} packages provide a powerful engine to render all kinds of geographical data. The data used in this section can be found in the [tutorial notes](rcanvec_tutorial.zip) you've hopefully already downloaded. First, we'll have to load the packages.
 ```
 #load packages
 library(sp)
