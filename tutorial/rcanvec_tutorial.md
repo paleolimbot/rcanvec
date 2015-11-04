@@ -9,6 +9,7 @@ install.packages("prettymapr")
 install.packages("rosm")
 install.packages("rcanvec")
 ```
+Later on you'll also need some data, which you can find in the [tutorial notes](rcanvec_tutorial.zip).
 
 ##Base plotting
 
@@ -78,7 +79,7 @@ It's also possible to capture this to a variable, but you'll eventually want to 
 There are numerous graphical parameters you can pass to these functions, which are documented in great detail at [Quick-R](http://www.statmethods.net/advgraphs/parameters.html) and in the [R man page for par](https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/par.html). The same parameters will be used when you plot spatial data, so it's worth becoming familiar with how to make points, lines, and polygons the way you'd like them to look.
 
 ##Plotting Spatial Data
-The {rgdal} and {sp} packages provide a powerful engine to render all kinds of geographical data. The data used in this section can be found in the [data](https://github.com/paleolimbot/rcanvec/tree/master/tutorial/data) folder. First, we'll have to load the packages.
+The {rgdal} and {sp} packages provide a powerful engine to render all kinds of geographical data. The data used in this section can be found in the [tutorial notes](rcanvec_tutorial.zip) you've hopefully already downloaded. First, we'll have to load the packages.
 ```
 #load packages
 library(sp)
