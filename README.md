@@ -10,7 +10,7 @@ CanVec data by location, plots it using pretty defaults, and exports it to
 human-readable shapefiles for use in another GIS.
 
 The gist of it:
-```
+```R
 library(rcanvec)
 library(prettymapr)
 
