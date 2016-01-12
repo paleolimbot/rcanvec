@@ -36,15 +36,17 @@
 }
 
 .parsentsstring <- function(st) {
+  st <- as.character(st)
   series <- NULL
   area <- NULL
   sheet <- NULL
   
   for(i in 1:nchar(st)) {
     subs <- substr(st, 1, i)
+    char <- substr(st, i, i)
     if(!.isanum(subs) && i==1) {
       stop("Invalid NTS: ", st)
-    } else if(i>1 && !.isanum(subs)) {
+    } else if(i>1 && !.isanum(char)) {
       #substring is no longer a number, so area letter must be current char
       series <- substr(st, 1, i-1)
       if(!.validseries(series)) {
