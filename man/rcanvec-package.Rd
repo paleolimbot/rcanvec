@@ -13,13 +13,6 @@ to create Canadian topographic maps, are two such items that are useful
 in creating vector-based maps for locations across Canada.
 }
 \details{
-\tabular{ll}{
-Package: \tab rcanvec\cr
-Type: \tab Package\cr
-Version: \tab 0.1.3\cr
-Date: \tab 2015-10-17\cr
-License: \tab GPL-2\cr
-}
 This package provides access to the CanVec/CanVec+ datasets via the \link{canvec.download}
 function. CanVec data is organized by National Topographic System number (e.g. 021H01), 
 so the \link{nts} function is provided to look up NTS number by location (e.g. lat/lon),
