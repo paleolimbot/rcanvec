@@ -34,7 +34,7 @@ Dewey Dunnington <dewey@fishandwhistle.net>
 }
 \references{
    \href{http://ftp2.cits.rncan.gc.ca/pub/canvec+/doc/CanVec+_product_specifications.pdf}{CanVec+ Product Specifications},
-   \href{http://www.nrcan.gc.ca/earth-sciences/geography/topographic-information/maps/9763}{National Topographic System (NTS) Documentation} 
+   \href{http://www.nrcan.gc.ca/earth-sciences/geography/topographic-information/maps/9767}{National Topographic System (NTS) Documentation} 
 }  
 \keyword{ package }
 \examples{
