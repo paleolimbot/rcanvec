@@ -1,8 +1,8 @@
 Package: rcanvec
 Type: Package
 Title: Access and Plot CanVec and CanVec+ Data for Rapid Basemap Creation in Canada
-Version: 0.1.4
-Date: 2016-01-12
+Version: 0.1.5.9000
+Date: 2016-01-22
 Author: Dewey Dunnington <dewey@fishandwhistle.net>
 Maintainer: Dewey Dunnington <dewey@fishandwhistle.net>
 Description: Provides an interface to the National Topographic System (NTS), which is
