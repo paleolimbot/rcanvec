@@ -245,7 +245,7 @@ canvec.loadfromdir <- function(directory, layerid) {
 #' \code{rgdal::ogrDrivers()} may also work.
 #' @param cachedir Pass a specific cache directory in which files have been extracted.
 #'                  Default value is that returned by \code{canvec.cachedir()}
-#'                  
+#' @param ... Arguments passed on to \code{sp::writeOGR()}
 #' @examples 
 #' \donttest{
 #' canvec.download(nts("21h01"))
@@ -258,7 +258,7 @@ canvec.loadfromdir <- function(directory, layerid) {
 #' }
 #' 
 #' @export
-canvec.export <- function(ntsid, tofolder, layers=NULL, crs=NULL, cachedir=NULL, driver=NULL) {
+canvec.export <- function(ntsid, tofolder, layers=NULL, crs=NULL, cachedir=NULL, driver=NULL, ...) {
   
   dir.create(tofolder)
   
@@ -327,10 +327,10 @@ canvec.export <- function(ntsid, tofolder, layers=NULL, crs=NULL, cachedir=NULL,
         
         spobj <- rgdal::readOGR(dsn=layerinfo[[i]][1], layer=layerinfo[[i]][2])
         if(is.null(crs)) {
-          rgdal::writeOGR(spobj, dsn=dsn, layer=layer, driver=driver)
+          rgdal::writeOGR(spobj, dsn=dsn, layer=layer, driver=driver, ...)
         } else {
           rgdal::writeOGR(sp::spTransform(spobj, crs), 
-                          dsn=dsn, layer=layer, driver=driver)
+                          dsn=dsn, layer=layer, driver=driver, ...)
         }
       } else {
         cat("File", filefrom, "not found, skipping.")
