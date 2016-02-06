@@ -1,4 +1,4 @@
-# rcanvec
+# CanVec Data in R
 [![](http://cranlogs.r-pkg.org/badges/rcanvec)](http://cran.rstudio.com/web/packages/rcanvec/index.html)
 
 An R package to access and plot CanVec and CanVec+ data for rapid basemap creation in Canada
@@ -16,10 +16,10 @@ The gist of it:
 library(rcanvec)
 library(prettymapr)
 
-canvec.qplot(bbox=searchbbox("wolfville ns", source="google"))
+canvec.qplot(bbox=searchbbox("wolfville ns"))
 
 #or use {prettymapr} to make it look nice
-prettymap(canvec.qplot(bbox=searchbbox("wolfville ns", source="google")))
+prettymap(canvec.qplot(bbox=searchbbox("wolfville ns"))
 ```
 ![example](https://cloud.githubusercontent.com/assets/10995762/10892282/e17317c6-8178-11e5-8c9d-b7136796bb66.png)
 
