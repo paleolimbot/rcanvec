@@ -1,4 +1,6 @@
 # rcanvec
+[![](http://cranlogs.r-pkg.org/badges/rcanvec)](http://cran.rstudio.com/web/packages/rcanvec/index.html)
+
 An R package to access and plot CanVec and CanVec+ data for rapid basemap creation in Canada
 
 {ranvec} provides an interface to the National Topographic System (NTS), which is
