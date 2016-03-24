@@ -1,21 +1,28 @@
 Package: rcanvec
 Type: Package
-Title: Access and Plot CanVec and CanVec+ Data for Rapid Basemap Creation in Canada
+Title: Access and Plot CanVec and CanVec+ Data for Rapid Basemap Creation in
+    Canada
 Version: 0.1.6
 Date: 2016-03-24
 Author: Dewey Dunnington <dewey@fishandwhistle.net>
 Maintainer: Dewey Dunnington <dewey@fishandwhistle.net>
-Description: Provides an interface to the National Topographic System (NTS), which is
- the way in which a number of freely available Canadian datasets 
- are organized. CanVec and CanVec+ datasets, which include all data used
- to create Canadian topographic maps, are two such datasets that are useful
- in creating vector-based maps for locations across Canada. This packages searches
- CanVec data by location, plots it using pretty defaults, and exports it to
- human-readable shapefiles for use in another GIS.
+Description: Provides an interface to the National Topographic System (NTS),
+    which is the way in which a number of freely available Canadian datasets are
+    organized. CanVec and CanVec+ datasets, which include all data used to create
+    Canadian topographic maps, are two such datasets that are useful in creating
+    vector-based maps for locations across Canada. This packages searches CanVec
+    data by location, plots it using pretty defaults, and exports it to human-
+    readable shapefiles for use in another GIS.
 License: GPL-2
-Depends: R (>= 2.10)
-Imports: sp, rgdal
+Depends:
+    R (>= 2.10)
+Imports:
+    sp,
+    rgdal
 URL: https://github.com/paleolimbot/rcanvec
 BugReports: https://github.com/paleolimbot/rcanvec/issues
 LazyData: true
-Suggests: prettymapr, testthat
+Suggests:
+    prettymapr,
+    testthat
+RoxygenNote: 5.0.1
