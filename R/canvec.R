@@ -70,10 +70,10 @@ canvec.filename <- function(ntsid, ext=NULL) {
 canvec.url <- function(ntsid, server="http://ftp2.cits.rncan.gc.ca/pub") {
   if(length(ntsid)>=3) {
     #assume canvec, available in 50k sheets
-    paste(server, "canvec/50k_shp", ntsid[1], tolower(ntsid[2]), canvec.filename(ntsid, ext=".zip"), sep="/")
+    paste(server, "canvec/archive/canvec_archive_20130515/50k_shp", ntsid[1], tolower(ntsid[2]), canvec.filename(ntsid, ext=".zip"), sep="/")
   } else if(length(ntsid)==2) {
     #assume canvec+, only available in 250k sheets
-    paste(server, "canvec+/shp", ntsid[1], canvec.filename(ntsid, ext=".zip"), sep="/")
+    paste(server, "canvec/archive/canvec+_archive_20151029/shp", ntsid[1], canvec.filename(ntsid, ext=".zip"), sep="/")
   } else {
     stop("Invalid nts id passed to canvec.url: ", ntsid)
   }
