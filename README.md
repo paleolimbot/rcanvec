@@ -1,6 +1,8 @@
 # rcanvec
 An R package to access and plot CanVec and CanVec+ data for rapid basemap creation in Canada
 
+**NOTE**: If you're getting all kinds of warnings about how your sheet may not exist, you need to upgrade to the newest version of `rcanvec`! GeoGratis changed the download directory for sheets organized in this way such that an update is required to access the information. 
+
 {ranvec} provides an interface to the National Topographic System (NTS), which is
 the way in which a number of freely available Canadian datasets 
 are organized. CanVec and CanVec+ datasets, which include all data used
