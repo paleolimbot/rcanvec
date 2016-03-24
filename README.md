@@ -1,4 +1,6 @@
-# rcanvec
+# CanVec Data in R
+[![](http://cranlogs.r-pkg.org/badges/rcanvec)](https://cran.r-project.org/package=rcanvec)
+
 An R package to access and plot CanVec and CanVec+ data for rapid basemap creation in Canada
 
 **NOTE**: If you're getting all kinds of warnings about how your sheet may not exist, you need to upgrade to the newest version of `rcanvec`! GeoGratis changed the download directory for sheets organized in this way such that an update is required to access the information. 
@@ -16,12 +18,12 @@ The gist of it:
 library(rcanvec)
 library(prettymapr)
 
-canvec.qplot(bbox=searchbbox("wolfville ns", source="google"))
+canvec.qplot(bbox=searchbbox("wolfville ns"))
 
 #or use {prettymapr} to make it look nice
-prettymap(canvec.qplot(bbox=searchbbox("wolfville ns", source="google")))
+prettymap(canvec.qplot(bbox=searchbbox("wolfville ns"))
 ```
 ![example](https://cloud.githubusercontent.com/assets/10995762/10892282/e17317c6-8178-11e5-8c9d-b7136796bb66.png)
 
 
-See the [PDF Manual](https://github.com/paleolimbot/rcanvec/files/15517/rcanvec_0.1.3-manual.pdf) for more details, or see the [tutorial](tutorial/rcanvec_tutorial.md).
+Find more information on the [CRAN package page](https://cran.r-project.org/package=rcanvec) or [view the manual](https://cran.r-project.org/web/packages/rcanvec/rcanvec.pdf).
