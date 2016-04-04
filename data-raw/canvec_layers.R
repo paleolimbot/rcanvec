@@ -42,8 +42,8 @@ canvec_layers <- structure(list(name = c("Navigational aid", "Residential area",
                                        "municipality", "aboriginal_lands", "nts50k_boundary_polygon", 
                                        "lookout", "ski_centre", "cemetery", "fort", "marina", "sports_track", 
                                        "golf_course", "camp", "drive-in_theatre", "botanical_garden", 
-                                       "shrine", "historical_site/point_of_interest", "amusement_park", 
-                                       "park/sports_field", "footbridge", "ruins", "trail", "stadium", 
+                                       "shrine", "point_of_interest", "amusement_park", 
+                                       "park", "footbridge", "ruins", "trail", "stadium", 
                                        "campground", "picnic_site", "golf_drining_range", "exhibition_ground", 
                                        "zoo", "tundra_pond", "palsa_bog", "saturated_soil", "wetland", 
                                        "string_bog", "named_feature", "railway", "railway_structure", 
@@ -100,3 +100,6 @@ canvec_layers <- structure(list(name = c("Navigational aid", "Residential area",
                            row.names = c(NA, -96L))
 
 canvec_layers$geometry_ext <- gsub("point", "_0", gsub("line", "_1", gsub("polygon", "_2", canvec_layers$geometry)))
+
+# no duplicate IDs!
+canvec_layers <- canvec_layers[!duplicated(canvec_layers$id),]

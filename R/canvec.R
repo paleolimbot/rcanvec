@@ -245,6 +245,8 @@ canvec.loadfromdir <- function(directory, layerid) {
 #' \code{rgdal::ogrDrivers()} may also work.
 #' @param cachedir Pass a specific cache directory in which files have been extracted.
 #'                  Default value is that returned by \code{canvec.cachedir()}
+#' @param combine \code{TRUE} if output should be one file per layer, \code{FALSE} otherwise
+#' @param overwrite \code{TRUE} if files should overwrite files already in output directory.
 #' @param ... Arguments passed on to \code{sp::writeOGR()}
 #' @examples 
 #' \donttest{
@@ -258,8 +260,13 @@ canvec.loadfromdir <- function(directory, layerid) {
 #' }
 #' 
 #' @export
-canvec.export <- function(ntsid, tofolder, layers=NULL, crs=NULL, cachedir=NULL, driver=NULL, ...) {
-  
+#' @importFrom sp rbind.SpatialPointsDataFrame
+#' @importFrom sp rbind.SpatialPolygonsDataFrame
+#' @importFrom sp rbind.SpatialLinesDataFrame
+canvec.export <- function(ntsid, tofolder, layers=NULL, crs=NULL, cachedir=NULL, driver=NULL,
+                          combine=TRUE, overwrite=TRUE, ...) {
+  # CMD trick
+  rbind.SpatialLinesDataFrame; rbind.SpatialPointsDataFrame; rbind.SpatialPolygonsDataFrame
   dir.create(tofolder)
   
   if(class(ntsid) != "list") {
@@ -272,73 +279,117 @@ canvec.export <- function(ntsid, tofolder, layers=NULL, crs=NULL, cachedir=NULL,
     layers <- canvec_layers$id
   }
   
-  layerinfo <- list()
-  filesto <- rep(NA, length(layers)*length(ntsid))
-  filemeta <- list()
-  for(i in 1:length(ntsid)) {
-    directory = file.path(cachedir, canvec.filename(ntsid[[i]]))
-    for(j in 1:length(layers)) {
-      ind <- (i-1)*length(layers)+j
-      layerinfo[[ind]] <- c(directory, canvec.findlayer(directory, layers[j]))
-      filemeta[[ind]] <- c(ntsstring(ntsid[[i]]), layers[j])
-      filesto[ind] <- paste(layers[j], paste(ntsid[[i]], collapse=""), sep="_")
-    }
-  }
-  
-  extensions <- c(".cpg", ".dbf", ".prj", ".shp", ".shx")
-  for(i in 1:length(layerinfo)) {
-    filefrom <- file.path(layerinfo[[i]][1], layerinfo[[i]][2])
-    if(is.null(crs) && is.null(driver)) {
-      #copy files
-      for(ext in extensions) {
-        filename <- paste0(filefrom, ext)
-        if(file.exists(filename)) {
-          fileto <- paste0(file.path(tofolder, filesto[i]),ext)
-          cat("Copying", filename, "to", fileto, "\n")
-          file.copy(filename, fileto, overwrite=TRUE)
-        } else {
-          cat("*File", filename, "not found. not copied\n")
-        }
+  if(combine && length(ntsid) > 1) {
+    
+    for(layer in layers) {
+      spdf <- do.call(.spatial_rbind, lapply(ntsid, function(n, ...) {
+        tryCatch(return(canvec.load(n, ...)), error=function(err) {
+          return(NULL)
+        })
+      }, layer))
+      
+      if(is.null(spdf)) {
+        next
       }
-    } else {
-      #load file, convert crs, then save
-      if(file.exists(paste0(filefrom, ".shp"))) {
-        if(is.null(driver)) {
-          driver <- "ESRI Shapefile"
-        }
-        
-        if(driver == "ESRI Shapefile") {
-          dsn <- tofolder
-        } else {
-          if(driver == "KML") {
-            ext <- ".kml"
-          } else if(driver == "CSV") {
-            ext <- ".csv"
-          } else if(driver == "GML") {
-            ext <- ".gml"
-          } else {
-            ext <- driver
-          }
-          
-          dsn <- paste0(file.path(tofolder, filesto[i]), ext)
-        }
-        
-        layer <- filesto[i]
-        
-        spobj <- rgdal::readOGR(dsn=layerinfo[[i]][1], layer=layerinfo[[i]][2])
-        if(is.null(crs)) {
-          rgdal::writeOGR(spobj, dsn=dsn, layer=layer, driver=driver, ...)
-        } else {
-          rgdal::writeOGR(sp::spTransform(spobj, crs), 
-                          dsn=dsn, layer=layer, driver=driver, ...)
-        }
+      
+      if(is.null(driver)) {
+        driver <- "ESRI Shapefile"
+      }
+      
+      if(driver == "ESRI Shapefile") {
+        dsn <- tofolder
       } else {
-        cat("File", filefrom, "not found, skipping.")
+        if(driver == "KML") {
+          ext <- ".kml"
+        } else if(driver == "CSV") {
+          ext <- ".csv"
+        } else if(driver == "GML") {
+          ext <- ".gml"
+        } else {
+          ext <- driver
+        }
+        
+        dsn <- paste0(file.path(tofolder, layer), ext)
+      }
+      message("Writing dsn: ", dsn, "; layer: ", layer)
+      if(is.null(crs)) {
+        rgdal::writeOGR(spdf, dsn=dsn, layer=layer, driver=driver, overwrite=overwrite, ...)
+      } else {
+        rgdal::writeOGR(sp::spTransform(spdf, crs), 
+                        dsn=dsn, layer=layer, driver=driver, overwrite=overwrite, ...)
       }
     }
     
+  } else {
+    layerinfo <- list()
+    filesto <- rep(NA, length(layers)*length(ntsid))
+    filemeta <- list()
+    for(i in 1:length(ntsid)) {
+      directory = file.path(cachedir, canvec.filename(ntsid[[i]]))
+      for(j in 1:length(layers)) {
+        ind <- (i-1)*length(layers)+j
+        layerinfo[[ind]] <- c(directory, canvec.findlayer(directory, layers[j]))
+        filemeta[[ind]] <- c(ntsstring(ntsid[[i]]), layers[j])
+        filesto[ind] <- paste(layers[j], paste(ntsid[[i]], collapse=""), sep="_")
+      }
+    }
+    
+    extensions <- c(".cpg", ".dbf", ".prj", ".shp", ".shx")
+    for(i in 1:length(layerinfo)) {
+      filefrom <- file.path(layerinfo[[i]][1], layerinfo[[i]][2])
+      if(is.null(crs) && is.null(driver)) {
+        #copy files
+        for(ext in extensions) {
+          filename <- paste0(filefrom, ext)
+          if(file.exists(filename)) {
+            fileto <- paste0(file.path(tofolder, filesto[i]),ext)
+            message("Copying ", filename, " to ", fileto, "\n")
+            file.copy(filename, fileto, overwrite=TRUE)
+          } else {
+            message("*File ", filename, " not found. not copied\n")
+          }
+        }
+      } else {
+        #load file, convert crs, then save
+        if(file.exists(paste0(filefrom, ".shp"))) {
+          
+          if(is.null(driver)) {
+            driver <- "ESRI Shapefile"
+          }
+          
+          if(driver == "ESRI Shapefile") {
+            dsn <- tofolder
+          } else {
+            if(driver == "KML") {
+              ext <- ".kml"
+            } else if(driver == "CSV") {
+              ext <- ".csv"
+            } else if(driver == "GML") {
+              ext <- ".gml"
+            } else {
+              ext <- driver
+            }
+            
+            dsn <- paste0(file.path(tofolder, filesto[i]), ext)
+          }
+          
+          layer <- filesto[i]
+          
+          spobj <- rgdal::readOGR(dsn=layerinfo[[i]][1], layer=layerinfo[[i]][2])
+          message("Writing dsn: ", dsn, "; layer: ", layer)
+          if(is.null(crs)) {
+            rgdal::writeOGR(spobj, dsn=dsn, layer=layer, driver=driver, overwrite=overwrite, ...)
+          } else {
+            rgdal::writeOGR(sp::spTransform(spobj, crs), 
+                            dsn=dsn, layer=layer, driver=driver, overwrite=overwrite, ...)
+          }
+        } else {
+          message("File ", filefrom, " not found, skipping.")
+        }
+      }
+      
+    }
   }
-  
 }
 
 #' Remove CanVec Data Files
@@ -495,4 +546,18 @@ canvec.defaultoptions <- function(layerid) {
   }
 }
 
+.spatial_rbind <- function(...) {
+  arglist <- list(...)
+  lastid <- -1
+  
+  for(i in 1:length(arglist)) {
+    rows <- length(arglist[[i]])
+    if(rows > 0) {
+      row.names(arglist[[i]]) <- as.character((lastid+1):(lastid+rows))
+    }
+    lastid <- lastid + rows
+  }
+
+  do.call(rbind, arglist[!sapply(arglist,is.null)])
+}
 
