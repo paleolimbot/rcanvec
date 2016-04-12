@@ -1,0 +1,7 @@
+tutorial
+rosm.cache/
+rcanvec.cache/
+.Rhistory
+.Rproj.user/
+.RData
+.DS_Store
