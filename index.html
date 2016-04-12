@@ -35,27 +35,174 @@
 
 <p>An R package to access and plot CanVec and CanVec+ data for rapid basemap creation in Canada</p>
 
-<p>{ranvec} provides an interface to the National Topographic System (NTS), which is
-the way in which a number of freely available Canadian datasets 
-are organized. CanVec and CanVec+ datasets, which include all data used
-to create Canadian topographic maps, are two such datasets that are useful
-in creating vector-based maps for locations across Canada. This packages searches
-CanVec data by location, plots it using pretty defaults, and exports it to
-human-readable shapefiles for use in another GIS.</p>
+<p><strong>NOTE</strong>: If you're getting all kinds of warnings about how your sheet may not exist, you need to upgrade to the newest version of <code>rcanvec</code>! GeoGratis changed the download directory for sheets organized in this way such that an update is required to access the information.</p>
 
-<p>The gist of it:</p>
+<p>{ranvec} provides an interface to the National Topographic System (NTS), which is the way in which a number of freely available Canadian datasets are organized. CanVec and CanVec+ datasets, which include all data used to create Canadian topographic maps, are two such datasets that are useful in creating vector-based maps for locations across Canada. This packages searches CanVec data by location, plots it using pretty defaults, and exports it to human-readable shapefiles for use in another GIS.</p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>The rcanvec package is <a href="https://cran.r-project.org/package=rcanvec">available on CRAN</a> and can be installed using <code>install.packages("rcanvec")</code>. The manual is <a href="https://cran.r-project.org/web/packages/rcanvec/rcanvec.pdf">also available on the CRAN website</a>.</p>
+
+<h2>
+<a id="exporting-canvec-data" class="anchor" href="#exporting-canvec-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exporting CanVec data</h2>
+
+<p>If you're like me, you'll probably want to make a map in some program other than R (<a href="http://www.qgis.org/">QGIS</a> is my personal favourite). You can do this easily using the <code>canvec.export()</code> function. The function combines all the NTS sheets you pass into it and exports to a folder of your choosing (with nice human-readable names!). We're going to use the <a href="http://paleolimbot.github.io/prettymapr">prettymapr package</a> to help with a few things as well.</p>
 
 <div class="highlight highlight-source-r"><pre>library(<span class="pl-smi">rcanvec</span>)
 library(<span class="pl-smi">prettymapr</span>)
+<span class="pl-smi">altalake</span> <span class="pl-k">&lt;-</span> makebbox(<span class="pl-c1">50.1232</span>, <span class="pl-k">-</span><span class="pl-c1">122.9574</span>, <span class="pl-c1">50.1035</span>, <span class="pl-k">-</span><span class="pl-c1">123.0042</span>)</pre></div>
 
-canvec.qplot(<span class="pl-v">bbox</span><span class="pl-k">=</span>searchbbox(<span class="pl-s"><span class="pl-pds">"</span>wolfville ns<span class="pl-pds">"</span></span>))
+<div class="highlight highlight-source-r"><pre>canvec.download(nts(<span class="pl-v">bbox</span><span class="pl-k">=</span><span class="pl-smi">altalake</span>))
+canvec.export(nts(<span class="pl-v">bbox</span><span class="pl-k">=</span><span class="pl-smi">altalake</span>), <span class="pl-s"><span class="pl-pds">"</span>canvec_data<span class="pl-pds">"</span></span>)</pre></div>
 
-<span class="pl-c">#or use {prettymapr} to make it look nice</span>
-prettymap(canvec.qplot(<span class="pl-v">bbox</span><span class="pl-k">=</span>searchbbox(<span class="pl-s"><span class="pl-pds">"</span>wolfville ns<span class="pl-pds">"</span></span>))</pre></div>
+<h2>
+<a id="finding-your-nts-sheet" class="anchor" href="#finding-your-nts-sheet" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Finding your NTS Sheet</h2>
 
-<p><img src="https://cloud.githubusercontent.com/assets/10995762/10892282/e17317c6-8178-11e5-8c9d-b7136796bb66.png" alt="example"></p>
+<p>These things called "paper maps" used to exist, each of which had a number (the ones we'll be looking at have the IDs "092J01" and "092J02"). The <code>nts()</code> function finds and/or parses these into series/area/sheet parameters so they can be used by the <code>canvec.*</code> functions (these numbers are how the Canadian government happens to organize this data). If this is confusing, don't worry and see the section below!</p>
 
-<p>Find more information on the <a href="https://cran.r-project.org/package=rcanvec">CRAN package page</a> or <a href="https://cran.r-project.org/web/packages/rcanvec/rcanvec.pdf">view the manual</a>.</p>
+<div class="highlight highlight-source-r"><pre>nts(<span class="pl-v">bbox</span><span class="pl-k">=</span><span class="pl-smi">altalake</span>)</pre></div>
+
+<pre><code>## [[1]]
+## [1] "092" "J"   "03" 
+## 
+## [[2]]
+## [1] "092" "J"   "02"
+</code></pre>
+
+<div class="highlight highlight-source-r"><pre>nts(<span class="pl-s"><span class="pl-pds">"</span>92j1<span class="pl-pds">"</span></span>)</pre></div>
+
+<pre><code>## [1] "092" "J"   "01"
+</code></pre>
+
+<div class="highlight highlight-source-r"><pre>nts(<span class="pl-s"><span class="pl-pds">"</span>092J01<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>092J02<span class="pl-pds">"</span></span>)</pre></div>
+
+<pre><code>## [[1]]
+## [1] "092" "J"   "01" 
+## 
+## [[2]]
+## [1] "092" "J"   "02"
+</code></pre>
+
+<p>The <code>ntsstring()</code> function produces strings in case you need to print them out somehow.</p>
+
+<div class="highlight highlight-source-r"><pre>ntsstring(<span class="pl-v">bbox</span><span class="pl-k">=</span><span class="pl-smi">altalake</span>)</pre></div>
+
+<pre><code>## [1] "092J03" "092J02"
+</code></pre>
+
+<h2>
+<a id="using-rcanvec-plot-basemaps" class="anchor" href="#using-rcanvec-plot-basemaps" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using {rcanvec} plot basemaps</h2>
+
+<p>The {rcanvec} package provides access to data produced by the Canadian government (the CanVec+ dataset) that is useful for creating basemaps for small-scale locations in Canada. If you're not in Canada, this won't help you much. Similarly, if you're trying to make a map of Ontario, this is not the package for you. The site we will look at (Alta Lake, near Whistler BC) is a couple of kilometres wide, which is about right in terms of scale.</p>
+
+<h3>
+<a id="step-1-find-your-bounding-box" class="anchor" href="#step-1-find-your-bounding-box" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 1: Find your bounding box</h3>
+
+<p>The {rcanvec} package plots based on a <strong>bounding box</strong>, or an area that you would like to be visible. There's a few ways to go about doing this, but the easiest way is to visit the <a href="http://www.openstreetmap.org/export">Open Street Maps Export page</a>, zoom to your area of interest, and copy/paste the values into <code>makebbox(northlat, eastlon, southlat, westlon)</code> from the {prettymapr} package. You can also use <code>searchbbox("my location name")</code>, also from the {prettymapr} package, which will query google for an appropriate bounding box. You'll notice that the bounding box returned by these methods is just a 2x2 matrix, the same as that returned by <code>bbox()</code> in the {sp} package.</p>
+
+<div class="highlight highlight-source-r"><pre><span class="pl-smi">altalake</span> <span class="pl-k">&lt;-</span> searchbbox(<span class="pl-s"><span class="pl-pds">"</span>alta lake, BC<span class="pl-pds">"</span></span>)
+<span class="pl-c"># or</span>
+<span class="pl-smi">altalake</span> <span class="pl-k">&lt;-</span> makebbox(<span class="pl-c1">50.1232</span>, <span class="pl-k">-</span><span class="pl-c1">122.9574</span>, <span class="pl-c1">50.1035</span>, <span class="pl-k">-</span><span class="pl-c1">123.0042</span>)</pre></div>
+
+<p>Back in the days of paper maps, NTS references were used to number maps in an orderly way. For example, the "Wolfville" 1:50,000 scale mapsheet would be referred to as "021H01", and our mapsheets for Alta Lake in BC would be 092J02 and 092J03. If you don't know what these are it's still ok, but this is how the government organizes the data. Take a minute to get familiar with your NTS reference(s), if you feel into it.</p>
+
+<div class="highlight highlight-source-r"><pre><span class="pl-c"># get a list of NTS references based on a bounding box</span>
+nts(<span class="pl-v">bbox</span><span class="pl-k">=</span><span class="pl-smi">altalake</span>)</pre></div>
+
+<pre><code>## [[1]]
+## [1] "092" "J"   "03" 
+## 
+## [[2]]
+## [1] "092" "J"   "02"
+</code></pre>
+
+<p>If you run this command and your bounding box returns more than 4 mapsheets, you're probably going to want to zoom in. If you're looking to export your data, you'll need to have some idea of what these are.</p>
+
+<h3>
+<a id="step-2-preview-your-map" class="anchor" href="#step-2-preview-your-map" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 2: Preview your map</h3>
+
+<p>{rcanvec} has a method to quickly plot a bounding box: <code>canvec.qplot()</code>. We'll pass our bounding box as the <code>bbox</code> argument, and we can use the <code>layers</code> argument to customize our layers. If things take too long to plot, you may want to just use <code>layers="waterbody"</code> (the "road" layer in particular usually takes a long time to plot). Layers you may want to use are "waterbody", "forest", "river", "contour", "building" and "road". Note that the order you put them in will change the appearance of the map.</p>
+
+<div class="highlight highlight-source-r"><pre>canvec.qplot(<span class="pl-v">bbox</span><span class="pl-k">=</span><span class="pl-smi">altalake</span>)</pre></div>
+
+<p><img src="README_files/figure-markdown_github/unnamed-chunk-7-1.png" alt=""></p>
+
+<div class="highlight highlight-source-r"><pre>canvec.qplot(<span class="pl-v">bbox</span><span class="pl-k">=</span><span class="pl-smi">altalake</span>, <span class="pl-v">layers</span><span class="pl-k">=</span>c(<span class="pl-s"><span class="pl-pds">"</span>waterbody<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>river<span class="pl-pds">"</span></span>))</pre></div>
+
+<p><img src="README_files/figure-markdown_github/unnamed-chunk-7-2.png" alt=""></p>
+
+<h3>
+<a id="step-3-refine-your-plotting-options-optional" class="anchor" href="#step-3-refine-your-plotting-options-optional" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 3: Refine your plotting options (optional)</h3>
+
+<p>It's possible (but not at all necessary) to load layers individually and plot them manually, giving us more control over the appearance of the map. You'll have to have called <code>canvec.qplot(bbox=XX)</code> or <code>canvec.download(nts(bbox=XX))</code> before you can load a layer.</p>
+
+<div class="highlight highlight-source-r"><pre><span class="pl-smi">waterbody</span> <span class="pl-k">&lt;-</span> canvec.load(nts(<span class="pl-v">bbox</span><span class="pl-k">=</span><span class="pl-smi">altalake</span>), <span class="pl-v">layerid</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>waterbody<span class="pl-pds">"</span></span>)
+<span class="pl-smi">rivers</span> <span class="pl-k">&lt;-</span> canvec.load(nts(<span class="pl-v">bbox</span><span class="pl-k">=</span><span class="pl-smi">altalake</span>), <span class="pl-v">layerid</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>river<span class="pl-pds">"</span></span>)
+<span class="pl-smi">forest</span> <span class="pl-k">&lt;-</span> canvec.load(nts(<span class="pl-v">bbox</span><span class="pl-k">=</span><span class="pl-smi">altalake</span>), <span class="pl-v">layerid</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>forest<span class="pl-pds">"</span></span>)</pre></div>
+
+<p>Using the graphic parameters such as <code>col</code> and <code>border</code>, we can plot our data manually. Note you'll have to use <code>xlim</code> and <code>ylim</code> arguments to zoom in. Also, for all calls to <code>plot()</code> after the first one, you'll have to pass <code>add=TRUE</code> or it will create a new plot. Because we're dealing with 2 mapsheets, canvec.load() returns a list of layers, and if you don't understand that you should pobably stick to using <code>canvec.qplot()</code>.</p>
+
+<div class="highlight highlight-source-r"><pre>plot(<span class="pl-smi">waterbody</span>[[<span class="pl-c1">2</span>]], <span class="pl-v">col</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>lightblue<span class="pl-pds">"</span></span>, <span class="pl-v">border</span><span class="pl-k">=</span><span class="pl-c1">0</span>, <span class="pl-v">xlim</span><span class="pl-k">=</span><span class="pl-smi">altalake</span>[<span class="pl-c1">1</span>,], <span class="pl-v">ylim</span><span class="pl-k">=</span><span class="pl-smi">altalake</span>[<span class="pl-c1">2</span>,])
+plot(<span class="pl-smi">forest</span>[[<span class="pl-c1">2</span>]], <span class="pl-v">col</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>#D0EADD<span class="pl-pds">"</span></span>, <span class="pl-v">border</span><span class="pl-k">=</span><span class="pl-c1">0</span>, <span class="pl-v">add</span><span class="pl-k">=</span><span class="pl-c1">TRUE</span>)
+plot(<span class="pl-smi">rivers</span>[[<span class="pl-c1">2</span>]], <span class="pl-v">col</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>lightblue<span class="pl-pds">"</span></span>, <span class="pl-v">add</span><span class="pl-k">=</span><span class="pl-c1">TRUE</span>)</pre></div>
+
+<p><img src="README_files/figure-markdown_github/unnamed-chunk-9-1.png" alt=""></p>
+
+<p>If you'd still like to use the <code>canvec.qplot()</code> function, it's also possible to build this customization as a "list of lists", best shown by example:</p>
+
+<div class="highlight highlight-source-r"><pre><span class="pl-v">plotoptions</span> <span class="pl-k">=</span> <span class="pl-k">list</span>()
+<span class="pl-smi">plotoptions</span><span class="pl-k">$</span><span class="pl-smi">waterbody</span> <span class="pl-k">&lt;-</span> <span class="pl-k">list</span>(<span class="pl-v">col</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>lightblue<span class="pl-pds">"</span></span>, <span class="pl-v">border</span><span class="pl-k">=</span><span class="pl-c1">0</span>)
+<span class="pl-smi">plotoptions</span><span class="pl-k">$</span><span class="pl-smi">forest</span> <span class="pl-k">&lt;-</span> <span class="pl-k">list</span>(<span class="pl-v">col</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>#D0EADD<span class="pl-pds">"</span></span>, <span class="pl-v">border</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>#D0EADD<span class="pl-pds">"</span></span>)
+<span class="pl-smi">plotoptions</span><span class="pl-k">$</span><span class="pl-smi">river</span> <span class="pl-k">&lt;-</span> <span class="pl-k">list</span>(<span class="pl-v">col</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>lightblue<span class="pl-pds">"</span></span>)
+
+canvec.qplot(<span class="pl-v">bbox</span><span class="pl-k">=</span><span class="pl-smi">altalake</span>, <span class="pl-v">layers</span><span class="pl-k">=</span>c(<span class="pl-s"><span class="pl-pds">"</span>waterbody<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>forest<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>river<span class="pl-pds">"</span></span>), <span class="pl-v">options</span><span class="pl-k">=</span><span class="pl-smi">plotoptions</span>)</pre></div>
+
+<p><img src="README_files/figure-markdown_github/unnamed-chunk-10-1.png" alt=""></p>
+
+<h3>
+<a id="step-4-add-overlays" class="anchor" href="#step-4-add-overlays" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 4: Add overlays</h3>
+
+<p>Next we'll use the <code>lines()</code>, <code>polygon()</code>, <code>arrows()</code>, and <code>text()</code> functions to draw on top of the map we've just plotted.</p>
+
+<div class="highlight highlight-source-r"><pre>canvec.qplot(<span class="pl-v">bbox</span><span class="pl-k">=</span><span class="pl-smi">altalake</span>, <span class="pl-v">layers</span><span class="pl-k">=</span>c(<span class="pl-s"><span class="pl-pds">"</span>waterbody<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>forest<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>river<span class="pl-pds">"</span></span>), <span class="pl-v">options</span><span class="pl-k">=</span><span class="pl-smi">plotoptions</span>)
+points(c(<span class="pl-k">-</span><span class="pl-c1">122.9841</span>, <span class="pl-k">-</span><span class="pl-c1">122.9812</span>), c(<span class="pl-c1">50.11055</span>, <span class="pl-c1">50.11765</span>), 
+       <span class="pl-v">pch</span><span class="pl-k">=</span><span class="pl-c1">15</span>, <span class="pl-v">cex</span><span class="pl-k">=</span><span class="pl-c1">0.6</span>)
+text(c(<span class="pl-k">-</span><span class="pl-c1">122.9841</span>, <span class="pl-k">-</span><span class="pl-c1">122.9812</span>), c(<span class="pl-c1">50.11055</span>, <span class="pl-c1">50.11765</span>), 
+     <span class="pl-v">labels</span><span class="pl-k">=</span>c(<span class="pl-s"><span class="pl-pds">"</span>GC6<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>GC2<span class="pl-pds">"</span></span>), <span class="pl-v">adj</span><span class="pl-k">=</span>c(<span class="pl-k">-</span><span class="pl-c1">0.2</span>, <span class="pl-c1">0.5</span>), <span class="pl-v">cex</span><span class="pl-k">=</span><span class="pl-c1">0.8</span>)</pre></div>
+
+<p><img src="README_files/figure-markdown_github/unnamed-chunk-11-1.png" alt=""></p>
+
+<p>A neat trick is to use the {rosm} package to add a hillshade on top of our map, which we would normally do before plotting our overlays. We'll have to tell <code>osm.plot()</code> not to project its data, since we're already in lat/lon.</p>
+
+<div class="highlight highlight-source-r"><pre>library(<span class="pl-smi">rosm</span>)
+canvec.qplot(<span class="pl-v">bbox</span><span class="pl-k">=</span><span class="pl-smi">altalake</span>, <span class="pl-v">layers</span><span class="pl-k">=</span>c(<span class="pl-s"><span class="pl-pds">"</span>waterbody<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>forest<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>river<span class="pl-pds">"</span></span>), <span class="pl-v">options</span><span class="pl-k">=</span><span class="pl-smi">plotoptions</span>)
+osm.plot(<span class="pl-smi">altalake</span>, <span class="pl-v">type</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>hillshade<span class="pl-pds">"</span></span>, <span class="pl-v">project</span><span class="pl-k">=</span><span class="pl-c1">FALSE</span>, <span class="pl-v">add</span><span class="pl-k">=</span><span class="pl-c1">TRUE</span>)</pre></div>
+
+<p><img src="README_files/figure-markdown_github/unnamed-chunk-12-1.png" alt=""></p>
+
+<h3>
+<a id="step-5-putting-it-all-together" class="anchor" href="#step-5-putting-it-all-together" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 5: Putting it all together</h3>
+
+<p>Putting it all together, an example plotting script might like this (here we're using <code>prettymap()</code> to set the margins and add a scalebar):</p>
+
+<div class="highlight highlight-source-r"><pre>library(<span class="pl-smi">prettymapr</span>)
+library(<span class="pl-smi">rosm</span>)
+library(<span class="pl-smi">rcanvec</span>)
+
+<span class="pl-smi">altalake</span> <span class="pl-k">&lt;-</span> makebbox(<span class="pl-c1">50.1232</span>, <span class="pl-k">-</span><span class="pl-c1">122.9574</span>, <span class="pl-c1">50.1035</span>, <span class="pl-k">-</span><span class="pl-c1">123.0042</span>)
+prettymap({
+  canvec.qplot(<span class="pl-v">bbox</span><span class="pl-k">=</span><span class="pl-smi">altalake</span>, <span class="pl-v">layers</span><span class="pl-k">=</span>c(<span class="pl-s"><span class="pl-pds">"</span>waterbody<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>forest<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>river<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>road<span class="pl-pds">"</span></span>))
+  osm.plot(<span class="pl-smi">altalake</span>, <span class="pl-v">type</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>hillshade<span class="pl-pds">"</span></span>, <span class="pl-v">project</span><span class="pl-k">=</span><span class="pl-c1">FALSE</span>, <span class="pl-v">add</span><span class="pl-k">=</span><span class="pl-c1">TRUE</span>)
+  points(c(<span class="pl-k">-</span><span class="pl-c1">122.9841</span>, <span class="pl-k">-</span><span class="pl-c1">122.9812</span>), c(<span class="pl-c1">50.11055</span>, <span class="pl-c1">50.11765</span>), 
+         <span class="pl-v">pch</span><span class="pl-k">=</span><span class="pl-c1">15</span>, <span class="pl-v">cex</span><span class="pl-k">=</span><span class="pl-c1">0.6</span>)
+  text(c(<span class="pl-k">-</span><span class="pl-c1">122.9841</span>, <span class="pl-k">-</span><span class="pl-c1">122.9812</span>), c(<span class="pl-c1">50.11055</span>, <span class="pl-c1">50.11765</span>), 
+       <span class="pl-v">labels</span><span class="pl-k">=</span>c(<span class="pl-s"><span class="pl-pds">"</span>GC6<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>GC2<span class="pl-pds">"</span></span>), <span class="pl-v">adj</span><span class="pl-k">=</span>c(<span class="pl-k">-</span><span class="pl-c1">0.2</span>, <span class="pl-c1">0.5</span>), <span class="pl-v">cex</span><span class="pl-k">=</span><span class="pl-c1">0.8</span>)
+  })</pre></div>
+
+<p><img src="README_files/figure-markdown_github/unnamed-chunk-13-1.png" alt=""></p>
+
+<p>There's tons of options for <code>prettymap()</code> that let you customize the north arrow, scale bar etc., which you can find in the <a href="https://cran.r-project.org/web/packages/prettymapr/prettymapr.pdf">{prettymapr} manual</a>.</p>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/paleolimbot">paleolimbot</a></p>
