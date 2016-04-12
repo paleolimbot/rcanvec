@@ -18,7 +18,7 @@ An R package to access and plot CanVec and CanVec+ data for rapid basemap creati
 
 ## Installation
 
-The rcanvec package is [available on CRAN](https://cran.r-project.org/package=rcanvec) and can be installed using `install.packages("rcanvec"). The manual is [also available on the CRAN website](https://cran.r-project.org/web/packages/rcanvec/rcanvec.pdf).
+The rcanvec package is [available on CRAN](https://cran.r-project.org/package=rcanvec) and can be installed using `install.packages("rcanvec")`. The manual is [also available on the CRAN website](https://cran.r-project.org/web/packages/rcanvec/rcanvec.pdf).
 
 ## Exporting CanVec data
 
