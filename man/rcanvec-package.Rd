@@ -33,7 +33,7 @@ many functions.
 Dewey Dunnington <dewey@fishandwhistle.net>
 }
 \references{
-   \href{http://ftp2.cits.rncan.gc.ca/pub/canvec/archive/canvec+_archive_20151029/doc/CanVec+_en_distribution_formats.pdf}{CanVec+ Product Specifications},
+   \href{http://ftp.geogratis.gc.ca/pub/nrcan_rncan/vector/canvec/archive/canvec+_archive_20151029/doc/CanVec+_en_distribution_formats.pdf}{CanVec+ Product Specifications},
    \href{http://www.nrcan.gc.ca/earth-sciences/geography/topographic-information/maps/9767}{National Topographic System (NTS) Documentation} 
 }  
 \keyword{ package }
