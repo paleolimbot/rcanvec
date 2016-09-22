@@ -4,3 +4,6 @@
 ^data-raw$
 ^\.git$
 ^tutorial$
+^rosm\.cache$
+^README\.Rmd$
+^README_files$

@@ -67,7 +67,7 @@ canvec.filename <- function(ntsid, ext=NULL) {
 #' @return A URL where the given data can be found.
 #' 
 #' @export
-canvec.url <- function(ntsid, server="http://ftp2.cits.rncan.gc.ca/pub") {
+canvec.url <- function(ntsid, server="http://ftp.geogratis.gc.ca/pub/nrcan_rncan/vector/") {
   if(length(ntsid)>=3) {
     #assume canvec, available in 50k sheets
     paste(server, "canvec/archive/canvec_archive_20130515/50k_shp", ntsid[1], tolower(ntsid[2]), canvec.filename(ntsid, ext=".zip"), sep="/")
