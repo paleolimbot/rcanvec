@@ -7,7 +7,7 @@ An R package to access and plot CanVec and CanVec+ data for rapid basemap creati
 
 **NOTE**: If you're getting all kinds of warnings about how your sheet may not exist, you need to upgrade to the newest version of `rcanvec`! GeoGratis changed the download directory for sheets organized in this way such that an update is required to access the information.
 
-{ranvec} provides an interface to the National Topographic System (NTS), which is the way in which a number of freely available Canadian datasets are organized. CanVec and CanVec+ datasets, which include all data used to create Canadian topographic maps, are two such datasets that are useful in creating vector-based maps for locations across Canada. This packages searches CanVec data by location, plots it using pretty defaults, and exports it to human-readable shapefiles for use in another GIS.
+`rcanvec` provides an interface to the National Topographic System (NTS), which is the way in which a number of freely available Canadian datasets are organized. CanVec and CanVec+ datasets, which include all data used to create Canadian topographic maps, are two such datasets that are useful in creating vector-based maps for locations across Canada. This packages searches CanVec data by location, plots it using pretty defaults, and exports it to human-readable shapefiles for use in another GIS.
 
 Installation
 ------------
@@ -69,14 +69,14 @@ ntsstring(bbox=altalake)
 
     ## [1] "092J03" "092J02"
 
-Using {rcanvec} plot basemaps
+Using `rcanvec` plot basemaps
 -----------------------------
 
-The {rcanvec} package provides access to data produced by the Canadian government (the CanVec+ dataset) that is useful for creating basemaps for small-scale locations in Canada. If you're not in Canada, this won't help you much. Similarly, if you're trying to make a map of Ontario, this is not the package for you. The site we will look at (Alta Lake, near Whistler BC) is a couple of kilometres wide, which is about right in terms of scale.
+The `rcanvec` package provides access to data produced by the Canadian government (the CanVec+ dataset) that is useful for creating basemaps for small-scale locations in Canada. If you're not in Canada, this won't help you much. Similarly, if you're trying to make a map of Ontario, this is not the package for you. The site we will look at (Alta Lake, near Whistler BC) is a couple of kilometres wide, which is about right in terms of scale.
 
 ### Step 1: Find your bounding box
 
-The {rcanvec} package plots based on a **bounding box**, or an area that you would like to be visible. There's a few ways to go about doing this, but the easiest way is to visit the [Open Street Maps Export page](http://www.openstreetmap.org/export), zoom to your area of interest, and copy/paste the values into `makebbox(northlat, eastlon, southlat, westlon)` from the {prettymapr} package. You can also use `searchbbox("my location name")`, also from the {prettymapr} package, which will query google for an appropriate bounding box. You'll notice that the bounding box returned by these methods is just a 2x2 matrix, the same as that returned by `bbox()` in the {sp} package.
+The `rcanvec` package plots based on a **bounding box**, or an area that you would like to be visible. There's a few ways to go about doing this, but the easiest way is to visit the [Open Street Maps Export page](http://www.openstreetmap.org/export), zoom to your area of interest, and copy/paste the values into `makebbox(northlat, eastlon, southlat, westlon)` from the `prettymapr` package. You can also use `searchbbox("my location name")`, also from the `prettymapr` package, which will query google for an appropriate bounding box. You'll notice that the bounding box returned by these methods is just a 2x2 matrix, the same as that returned by `bbox()` in the `sp` package.
 
 ``` r
 altalake <- searchbbox("alta lake, BC")
@@ -101,7 +101,7 @@ If you run this command and your bounding box returns more than 4 mapsheets, you
 
 ### Step 2: Preview your map
 
-{rcanvec} has a method to quickly plot a bounding box: `canvec.qplot()`. We'll pass our bounding box as the `bbox` argument, and we can use the `layers` argument to customize our layers. If things take too long to plot, you may want to just use `layers="waterbody"` (the "road" layer in particular usually takes a long time to plot). Layers you may want to use are "waterbody", "forest", "river", "contour", "building" and "road". Note that the order you put them in will change the appearance of the map.
+`rcanvec` has a method to quickly plot a bounding box: `canvec.qplot()`. We'll pass our bounding box as the `bbox` argument, and we can use the `layers` argument to customize our layers. If things take too long to plot, you may want to just use `layers="waterbody"` (the "road" layer in particular usually takes a long time to plot). Layers you may want to use are "waterbody", "forest", "river", "contour", "building" and "road". Note that the order you put them in will change the appearance of the map.
 
 ``` r
 canvec.qplot(bbox=altalake)
@@ -162,7 +162,7 @@ text(c(-122.9841, -122.9812), c(50.11055, 50.11765),
 
 ![](README_files/figure-markdown_github/unnamed-chunk-11-1.png)
 
-A neat trick is to use the {rosm} package to add a hillshade on top of our map, which we would normally do before plotting our overlays. We'll have to tell `osm.plot()` not to project its data, since we're already in lat/lon.
+A neat trick is to use the `rosm` package to add a hillshade on top of our map, which we would normally do before plotting our overlays. We'll have to tell `osm.plot()` not to project its data, since we're already in lat/lon.
 
 ``` r
 library(rosm)
@@ -194,4 +194,4 @@ prettymap({
 
 ![](README_files/figure-markdown_github/unnamed-chunk-13-1.png)
 
-There's tons of options for `prettymap()` that let you customize the north arrow, scale bar etc., which you can find in the [{prettymapr} manual](https://cran.r-project.org/web/packages/prettymapr/prettymapr.pdf).
+There's tons of options for `prettymap()` that let you customize the north arrow, scale bar etc., which you can find in the [`prettymapr` manual](https://cran.r-project.org/web/packages/prettymapr/prettymapr.pdf).
